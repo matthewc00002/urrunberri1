@@ -6,7 +6,6 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-
 body {
   font-family: 'DM Sans', sans-serif;
   background: #0d2233;
@@ -16,7 +15,6 @@ body {
   justify-content: center;
   overflow: hidden;
 }
-
 body::before {
   content: '';
   position: fixed;
@@ -26,63 +24,63 @@ body::before {
     radial-gradient(circle at 85% 85%, rgba(26,143,168,0.08) 0%, transparent 50%);
   pointer-events: none;
 }
-
 .card {
   background: rgba(255,255,255,0.04);
   border: 1.5px solid rgba(41,182,212,0.2);
   border-radius: 24px;
-  padding: 40px 50px;
-  width: 480px;
+  padding: 32px 44px;
+  width: 500px;
   box-shadow: 0 20px 80px rgba(0,0,0,0.6), 0 0 60px rgba(41,182,212,0.05);
   position: relative;
   z-index: 1;
   animation: fadeIn 0.6s ease;
 }
-
 @keyframes fadeIn {
   from { opacity:0; transform:translateY(24px); }
   to   { opacity:1; transform:translateY(0); }
 }
-
-/* Logo */
-.logo-wrap {
-  text-align: center;
-  margin-bottom: 28px;
-}
+.logo-wrap { text-align: center; margin-bottom: 22px; }
 .logo-wrap img {
-  width: 200px;
-  height: 200px;
+  width: 160px; height: 160px;
   object-fit: contain;
   filter: drop-shadow(0 4px 24px rgba(41,182,212,0.25));
 }
-
-/* Section label */
 .section-label {
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 11px; font-weight: 600;
   color: #29b6d4;
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 8px;
 }
-
-/* Saved connections */
-.saved-wrap {
-  margin-bottom: 20px;
+.saved-wrap { margin-bottom: 14px; }
+.saved-actions { display: flex; gap: 6px; margin-top: 6px; }
+.btn-small {
+  flex: 1; padding: 7px 10px;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid rgba(41,182,212,0.3);
+  background: rgba(41,182,212,0.08);
+  color: #29b6d4;
+  transition: all 0.2s;
 }
-
+.btn-small:hover { background: rgba(41,182,212,0.2); }
+.btn-small.danger {
+  border-color: rgba(255,80,80,0.3);
+  background: rgba(255,80,80,0.08);
+  color: #ff6b6b;
+}
+.btn-small.danger:hover { background: rgba(255,80,80,0.2); }
 select {
-  width: 100%;
-  padding: 11px 14px;
+  width: 100%; padding: 11px 14px;
   background: rgba(255,255,255,0.06);
   border: 1.5px solid rgba(41,182,212,0.2);
   border-radius: 10px;
   color: #e0f0f8;
   font-family: 'DM Sans', sans-serif;
   font-size: 13px;
-  outline: none;
-  cursor: pointer;
-  appearance: none;
+  outline: none; cursor: pointer; appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2329b6d4' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 14px center;
@@ -90,50 +88,33 @@ select {
 }
 select:focus { border-color: #29b6d4; }
 select option { background: #0d2233; color: #e0f0f8; }
-
-/* Divider */
 .divider {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 18px 0;
-  color: rgba(255,255,255,0.25);
-  font-size: 11px;
+  display: flex; align-items: center;
+  gap: 10px; margin: 14px 0;
+  color: rgba(255,255,255,0.25); font-size: 11px;
 }
 .divider::before, .divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
+  content: ''; flex: 1; height: 1px;
   background: rgba(255,255,255,0.1);
 }
-
-/* Form fields */
-.fields { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
-
+.fields { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
 .row { display: flex; gap: 10px; }
 .row .field { flex: 1; }
-.row .field.port { flex: 0 0 100px; }
-
+.row .field.port { flex: 0 0 90px; }
+.row .field.short { flex: 0 0 150px; }
 .field label {
-  display: block;
-  font-size: 11px;
-  font-weight: 600;
+  display: block; font-size: 11px; font-weight: 600;
   color: rgba(255,255,255,0.45);
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
+  text-transform: uppercase; letter-spacing: 0.8px;
   margin-bottom: 5px;
 }
-
 input {
-  width: 100%;
-  padding: 11px 14px;
+  width: 100%; padding: 11px 14px;
   background: rgba(255,255,255,0.06);
   border: 1.5px solid rgba(255,255,255,0.1);
-  border-radius: 10px;
-  color: #e0f0f8;
+  border-radius: 10px; color: #e0f0f8;
   font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  outline: none;
+  font-size: 13px; outline: none;
   transition: border-color 0.2s, background 0.2s;
 }
 input::placeholder { color: rgba(255,255,255,0.2); }
@@ -141,22 +122,27 @@ input:focus {
   border-color: #29b6d4;
   background: rgba(41,182,212,0.06);
 }
-
-/* Buttons */
+.check-row {
+  display: flex; align-items: center; gap: 10px; margin-top: 2px;
+}
+.check-row input[type=checkbox] {
+  width: 16px; height: 16px;
+  accent-color: #29b6d4;
+  cursor: pointer; flex-shrink: 0;
+}
+.check-row label {
+  font-size: 12px; color: rgba(255,255,255,0.55);
+  text-transform: none; letter-spacing: 0;
+  cursor: pointer; margin-bottom: 0;
+}
 .btn-row { display: flex; gap: 10px; }
-
 .btn-connect {
-  flex: 1;
-  padding: 13px;
+  flex: 1; padding: 13px;
   background: linear-gradient(135deg, #29b6d4, #1a8fa8);
-  border: none;
-  border-radius: 12px;
-  color: white;
+  border: none; border-radius: 12px; color: white;
   font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
+  font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
   box-shadow: 0 4px 20px rgba(41,182,212,0.3);
 }
 .btn-connect:hover {
@@ -165,99 +151,83 @@ input:focus {
   box-shadow: 0 6px 28px rgba(41,182,212,0.45);
 }
 .btn-connect:active { transform: translateY(0); }
-
 .btn-close {
   padding: 13px 20px;
   background: rgba(255,255,255,0.06);
   border: 1.5px solid rgba(255,255,255,0.12);
-  border-radius: 12px;
-  color: rgba(255,255,255,0.5);
+  border-radius: 12px; color: rgba(255,255,255,0.5);
   font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.2s;
+  font-size: 13px; cursor: pointer; transition: all 0.2s;
 }
 .btn-close:hover {
   background: rgba(255,80,80,0.15);
   border-color: rgba(255,80,80,0.3);
   color: #ff6b6b;
 }
-
-/* Error message */
 .error {
   display: none;
   background: rgba(255,80,80,0.1);
   border: 1px solid rgba(255,80,80,0.3);
-  border-radius: 8px;
-  color: #ff8080;
-  font-size: 12px;
-  padding: 8px 12px;
-  margin-bottom: 14px;
-  text-align: center;
+  border-radius: 8px; color: #ff8080;
+  font-size: 12px; padding: 8px 12px;
+  margin-bottom: 12px; text-align: center;
 }
-
-/* Lang switcher */
+.success {
+  display: none;
+  background: rgba(41,212,100,0.1);
+  border: 1px solid rgba(41,212,100,0.3);
+  border-radius: 8px; color: #50d48a;
+  font-size: 12px; padding: 8px 12px;
+  margin-bottom: 12px; text-align: center;
+}
 .langs {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  margin-top: 20px;
+  display: flex; justify-content: center;
+  gap: 6px; margin-top: 16px;
 }
 .lang-btn {
-  padding: 4px 10px;
-  border-radius: 16px;
+  padding: 4px 10px; border-radius: 16px;
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(41,182,212,0.15);
   color: rgba(255,255,255,0.35);
-  font-size: 11px;
-  cursor: pointer;
+  font-size: 11px; cursor: pointer;
   font-family: 'DM Sans', sans-serif;
   transition: all 0.15s;
 }
 .lang-btn.active, .lang-btn:hover {
-  background: #29b6d4;
-  color: #fff;
-  border-color: #29b6d4;
+  background: #29b6d4; color: #fff; border-color: #29b6d4;
 }
-
 .version {
-  position: absolute;
-  bottom: 14px;
-  right: 18px;
-  font-size: 10px;
-  color: rgba(255,255,255,0.15);
+  position: absolute; bottom: 12px; right: 16px;
+  font-size: 10px; color: rgba(255,255,255,0.15);
 }
-
-/* Loading state */
 .btn-connect.loading {
   background: rgba(41,182,212,0.4);
-  cursor: not-allowed;
-  transform: none;
+  cursor: not-allowed; transform: none;
 }
 </style>
 </head>
 <body>
-
 <div class="card">
-
-  <!-- Logo -->
   <div class="logo-wrap">
     <img src="http://127.0.0.1:7070/splash/urrunberri.png" alt="UrrunBerri OS" />
   </div>
-
-  <!-- Saved connections -->
   <div class="saved-wrap" id="saved-wrap" style="display:none">
     <div class="section-label" id="lbl-recent">Connexions recentes</div>
-    <select id="saved-select" onchange="onSavedSelect()">
-    </select>
+    <select id="saved-select" onchange="onSavedSelect()"></select>
+    <div class="saved-actions">
+      <button class="btn-small" onclick="saveConnection()" id="btn-save">💾 Sauvegarder</button>
+      <button class="btn-small danger" onclick="deleteConnection()" id="btn-delete">🗑 Supprimer</button>
+    </div>
   </div>
-
-  <div class="divider" id="divider" style="display:none" id="lbl-or">ou nouvelle connexion</div>
-
-  <!-- Error -->
+  <div id="saved-wrap-empty" style="display:none; margin-bottom:14px;">
+    <div class="section-label">Connexions recentes</div>
+    <div class="saved-actions">
+      <button class="btn-small" onclick="saveConnection()" id="btn-save2">💾 Sauvegarder cette connexion</button>
+    </div>
+  </div>
+  <div class="divider" id="divider" style="display:none">ou nouvelle connexion</div>
   <div class="error" id="error-msg">Veuillez renseigner l'adresse IP et le nom d'utilisateur.</div>
-
-  <!-- Fields -->
+  <div class="success" id="success-msg">Connexion sauvegardee.</div>
   <div class="fields">
     <div class="row">
       <div class="field">
@@ -277,63 +247,59 @@ input:focus {
       <label id="lbl-pass">Mot de passe</label>
       <input type="password" id="password" placeholder="••••••••" />
     </div>
+    <div class="row">
+      <div class="field">
+        <label id="lbl-proto">Protocole</label>
+        <select id="protocol" onchange="onProtocolChange()">
+          <option value="rdp">RDP</option>
+          <option value="vnc">VNC</option>
+          <option value="ssh">SSH</option>
+          <option value="web">Web</option>
+        </select>
+      </div>
+      <div class="field short">
+        <label id="lbl-res">Resolution</label>
+        <select id="resolution">
+          <option value="1920x1080">1920x1080</option>
+          <option value="1280x720">1280x720</option>
+          <option value="1600x900">1600x900</option>
+          <option value="1366x768">1366x768</option>
+          <option value="2560x1440">2560x1440</option>
+        </select>
+      </div>
+    </div>
+    <div class="check-row" id="multimon-row">
+      <input type="checkbox" id="multimon" />
+      <label for="multimon" id="lbl-multimon">Multi-ecrans</label>
+    </div>
   </div>
-
-  <!-- Buttons -->
   <div class="btn-row">
     <button class="btn-connect" id="btn-connect" onclick="connect()">
       <span id="btn-text">Connexion</span>
     </button>
     <button class="btn-close" onclick="closeApp()">✕</button>
   </div>
-
-  <!-- Languages -->
   <div class="langs">
-    <button class="lang-btn active" onclick="setLang('fr')">🇫🇷 FR</button>
-    <button class="lang-btn" onclick="setLang('en')">🇬🇧 EN</button>
-    <button class="lang-btn" onclick="setLang('es')">🇪🇸 ES</button>
-    <button class="lang-btn" onclick="setLang('eu')">🏴 EU</button>
+    <button class="lang-btn active" onclick="setLang('fr')">FR</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" onclick="setLang('es')">ES</button>
+    <button class="lang-btn" onclick="setLang('eu')">EU</button>
   </div>
-
-  <div class="version">UrrunBerri OS v1.0 — Openema SARL — github.com/matthewc00002/urrunberri1</div>
+  <div class="version">UrrunBerri OS v2.0 — Openema SARL</div>
 </div>
-
 <script>
-// ── i18n ────────────────────────────────────────────────────────────────────
 const i18n = {
-  fr: {
-    recent: 'Connexions récentes', or: 'ou nouvelle connexion',
-    ip: 'Adresse IP', port: 'Port', user: 'Utilisateur', pass: 'Mot de passe',
-    connect: 'Connexion', connecting: 'Connexion...', new: 'Nouvelle connexion',
-    error: 'Veuillez renseigner l\'adresse IP et le nom d\'utilisateur.'
-  },
-  en: {
-    recent: 'Recent connections', or: 'or new connection',
-    ip: 'IP Address', port: 'Port', user: 'Username', pass: 'Password',
-    connect: 'Connect', connecting: 'Connecting...', new: 'New connection',
-    error: 'Please enter IP address and username.'
-  },
-  es: {
-    recent: 'Conexiones recientes', or: 'o nueva conexion',
-    ip: 'Dirección IP', port: 'Puerto', user: 'Usuario', pass: 'Contraseña',
-    connect: 'Conectar', connecting: 'Conectando...', new: 'Nueva conexión',
-    error: 'Por favor, introduce la IP y el nombre de usuario.'
-  },
-  eu: {
-    recent: 'Azken konexioak', or: 'edo konexio berria',
-    ip: 'IP helbidea', port: 'Portua', user: 'Erabiltzailea', pass: 'Pasahitza',
-    connect: 'Konektatu', connecting: 'Konektatzen...', new: 'Konexio berria',
-    error: 'Mesedez, sartu IP helbidea eta erabiltzaile izena.'
-  }
+  fr: { recent:'Connexions recentes', or:'ou nouvelle connexion', ip:'Adresse IP', port:'Port', user:'Utilisateur', pass:'Mot de passe', proto:'Protocole', res:'Resolution', multimon:'Multi-ecrans', connect:'Connexion', connecting:'Connexion...', new:'Nouvelle connexion', error:'Veuillez renseigner IP et utilisateur.', saved:'Connexion sauvegardee.', save:'Sauvegarder', save2:'Sauvegarder cette connexion', del:'Supprimer', delconfirm:'Supprimer cette connexion ?' },
+  en: { recent:'Recent connections', or:'or new connection', ip:'IP Address', port:'Port', user:'Username', pass:'Password', proto:'Protocol', res:'Resolution', multimon:'Multi-screen', connect:'Connect', connecting:'Connecting...', new:'New connection', error:'Please enter IP and username.', saved:'Connection saved.', save:'Save', save2:'Save this connection', del:'Delete', delconfirm:'Delete this connection?' },
+  es: { recent:'Conexiones recientes', or:'o nueva conexion', ip:'Direccion IP', port:'Puerto', user:'Usuario', pass:'Contrasena', proto:'Protocolo', res:'Resolucion', multimon:'Multi-pantalla', connect:'Conectar', connecting:'Conectando...', new:'Nueva conexion', error:'Introduce IP y usuario.', saved:'Conexion guardada.', save:'Guardar', save2:'Guardar esta conexion', del:'Eliminar', delconfirm:'Eliminar esta conexion?' },
+  eu: { recent:'Azken konexioak', or:'edo konexio berria', ip:'IP helbidea', port:'Portua', user:'Erabiltzailea', pass:'Pasahitza', proto:'Protokoloa', res:'Bereizmena', multimon:'Pantaila anitz', connect:'Konektatu', connecting:'Konektatzen...', new:'Konexio berria', error:'Sartu IP eta erabiltzailea.', saved:'Konexioa gordeta.', save:'Gorde', save2:'Konexio hau gorde', del:'Ezabatu', delconfirm:'Konexio hau ezabatu?' }
 };
-
 let lang = 'fr';
-
 function setLang(l) {
   lang = l;
   const t = i18n[l] || i18n.fr;
   document.querySelectorAll('.lang-btn').forEach(b => {
-    b.classList.toggle('active', b.getAttribute('onclick').includes(`'${l}'`));
+    b.classList.toggle('active', b.getAttribute('onclick').includes("'"+l+"'"));
   });
   document.getElementById('lbl-recent').textContent = t.recent;
   document.getElementById('divider').textContent = t.or;
@@ -341,100 +307,143 @@ function setLang(l) {
   document.getElementById('lbl-port').textContent = t.port;
   document.getElementById('lbl-user').textContent = t.user;
   document.getElementById('lbl-pass').textContent = t.pass;
+  document.getElementById('lbl-proto').textContent = t.proto;
+  document.getElementById('lbl-res').textContent = t.res;
+  document.getElementById('lbl-multimon').textContent = t.multimon;
   document.getElementById('btn-text').textContent = t.connect;
   document.getElementById('error-msg').textContent = t.error;
-  // Update new connection option
+  document.getElementById('btn-save').textContent = t.save;
+  document.getElementById('btn-save2').textContent = t.save2;
+  document.getElementById('btn-delete').textContent = t.del;
   const sel = document.getElementById('saved-select');
-  if (sel.options.length > 0) {
-    sel.options[sel.options.length - 1].text = t.new;
-  }
+  if (sel.options.length > 0) sel.options[sel.options.length-1].text = t.new;
 }
-
-// ── Load saved connections from file via fetch ───────────────────────────────
+function onProtocolChange() {
+  const proto = document.getElementById('protocol').value;
+  const defaults = { rdp:'3389', vnc:'5900', ssh:'22', web:'80' };
+  document.getElementById('port').value = defaults[proto] || '3389';
+  const rdpOnly = proto === 'rdp';
+  document.getElementById('resolution').parentElement.style.opacity = rdpOnly ? '1' : '0.35';
+  document.getElementById('multimon-row').style.opacity = rdpOnly ? '1' : '0.35';
+}
 let savedConnections = __SAVED_CONNECTIONS__;
 if (!Array.isArray(savedConnections)) savedConnections = [];
-
-function loadSaved() {
+function renderSaved() {
   const sel = document.getElementById('saved-select');
   const wrap = document.getElementById('saved-wrap');
+  const wrap2 = document.getElementById('saved-wrap-empty');
   const div = document.getElementById('divider');
-
   if (savedConnections && savedConnections.length > 0) {
     sel.innerHTML = '';
     savedConnections.forEach((c, i) => {
       const opt = document.createElement('option');
       opt.value = i;
-      const label = c.name ? c.name + ' — ' + c.host : c.host + ':' + c.port + '  (' + c.user + ')';
-      opt.text = label;
+      opt.text = (c.name ? c.name : c.host+':'+c.port+' ('+c.user+')');
       sel.appendChild(opt);
     });
     const newOpt = document.createElement('option');
     newOpt.value = 'new';
     newOpt.text = i18n[lang].new;
     sel.appendChild(newOpt);
-
     wrap.style.display = 'block';
+    wrap2.style.display = 'none';
     div.style.display = 'flex';
     onSavedSelect();
+  } else {
+    wrap.style.display = 'none';
+    wrap2.style.display = 'block';
+    div.style.display = 'none';
   }
 }
-
 function onSavedSelect() {
-  const sel = document.getElementById('saved-select');
-  const val = sel.value;
+  const val = document.getElementById('saved-select').value;
   if (val === 'new') {
     document.getElementById('ip').value = '';
     document.getElementById('port').value = '3389';
     document.getElementById('username').value = '';
     document.getElementById('password').value = '';
+    document.getElementById('protocol').value = 'rdp';
+    document.getElementById('resolution').value = '1920x1080';
+    document.getElementById('multimon').checked = false;
     document.getElementById('ip').focus();
   } else {
     const c = savedConnections[parseInt(val)];
     if (c) {
-      document.getElementById('ip').value = c.host;
-      document.getElementById('port').value = c.port;
-      document.getElementById('username').value = c.user;
+      document.getElementById('ip').value = c.host || '';
+      document.getElementById('port').value = c.port || '3389';
+      document.getElementById('username').value = c.user || '';
       document.getElementById('password').value = '';
+      document.getElementById('protocol').value = c.protocol || 'rdp';
+      document.getElementById('resolution').value = c.resolution || '1920x1080';
+      document.getElementById('multimon').checked = c.multimon == '1';
+      onProtocolChange();
       document.getElementById('password').focus();
     }
   }
 }
-
-// ── Connect ──────────────────────────────────────────────────────────────────
+function saveConnection() {
+  const ip = document.getElementById('ip').value.trim();
+  const user = document.getElementById('username').value.trim();
+  if (!ip || !user) { document.getElementById('error-msg').style.display='block'; return; }
+  const data = {
+    name: ip+' ('+user+')',
+    host: ip,
+    port: document.getElementById('port').value.trim() || '3389',
+    user: user,
+    domain: '',
+    protocol: document.getElementById('protocol').value,
+    resolution: document.getElementById('resolution').value,
+    multimon: document.getElementById('multimon').checked ? '1' : '0'
+  };
+  fetch('http://127.0.0.1:7070/save', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(data)
+  }).then(r=>r.json()).then(res=>{
+    if (res.ok) {
+      savedConnections = res.connections;
+      renderSaved();
+      const sm = document.getElementById('success-msg');
+      sm.textContent = i18n[lang].saved;
+      sm.style.display = 'block';
+      setTimeout(()=>{ sm.style.display='none'; }, 2500);
+    }
+  }).catch(()=>{});
+}
+function deleteConnection() {
+  const val = document.getElementById('saved-select').value;
+  if (val === 'new' || val === '') return;
+  if (!confirm(i18n[lang].delconfirm)) return;
+  fetch('http://127.0.0.1:7070/delete', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({index: parseInt(val)})
+  }).then(r=>r.json()).then(res=>{
+    if (res.ok) { savedConnections = res.connections; renderSaved(); }
+  }).catch(()=>{});
+}
 function connect() {
-  const ip   = document.getElementById('ip').value.trim();
+  const ip = document.getElementById('ip').value.trim();
   const port = document.getElementById('port').value.trim() || '3389';
   const user = document.getElementById('username').value.trim();
   const pass = document.getElementById('password').value;
-  const err  = document.getElementById('error-msg');
-
-  if (!ip || !user) {
-    err.style.display = 'block';
-    return;
-  }
-  err.style.display = 'none';
-
-  // Show loading state
+  const protocol = document.getElementById('protocol').value;
+  const res = document.getElementById('resolution').value;
+  const multimon = document.getElementById('multimon').checked ? '1' : '0';
+  if (!ip || !user) { document.getElementById('error-msg').style.display='block'; return; }
+  document.getElementById('error-msg').style.display='none';
   const btn = document.getElementById('btn-connect');
   btn.classList.add('loading');
   document.getElementById('btn-text').textContent = i18n[lang].connecting;
-
-  const result = `${ip}|${port}|${user}|${pass}|||rdp|1920x1080|0`;
-  fetch('http://127.0.0.1:7070/connect?data=' + encodeURIComponent(result))
-    .catch(() => {});
+  const result = ip+'|'+port+'|'+user+'|'+pass+'|||'+protocol+'|'+res+'|'+multimon;
+  fetch('http://127.0.0.1:7070/connect?data='+encodeURIComponent(result)).catch(()=>{});
 }
-
 function closeApp() {
-  fetch('http://127.0.0.1:7070/close').catch(() => {});
+  fetch('http://127.0.0.1:7070/close').catch(()=>{});
 }
-
-// ── Enter key ────────────────────────────────────────────────────────────────
-document.addEventListener('keydown', e => {
-  if (e.key === 'Enter') connect();
-});
-
-// ── Init ─────────────────────────────────────────────────────────────────────
-loadSaved();
+document.addEventListener('keydown', e => { if (e.key==='Enter') connect(); });
+renderSaved();
+onProtocolChange();
 </script>
 </body>
 </html>
