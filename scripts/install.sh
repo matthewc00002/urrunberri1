@@ -1,0 +1,111 @@
+#!/bin/bash
+# =============================================================================
+#  UrrunBerri OS — Install Script
+#  Debian 13 Trixie — Root autologin — xfreerdp3
+#  Author : Mathieu Cadi — Openema SARL
+#  GitHub : https://github.com/matthewc00002/urrunberri1
+# =============================================================================
+
+set -e
+
+GITHUB_RAW="https://raw.githubusercontent.com/matthewc00002/urrunberri1/main"
+INSTALL_DIR="/opt/urrunberri-os"
+
+info()  { echo "[UrrunBerri OS] $1"; }
+error() { echo "[ERREUR] $1"; exit 1; }
+
+[[ $EUID -ne 0 ]] && error "Lancez ce script en root : bash install.sh"
+
+info "=== UrrunBerri OS — Installation Debian 13 Trixie ==="
+
+# ── PACKAGES ──────────────────────────────────────────────────────────────────
+info "Installation des paquets..."
+apt-get update -qq
+apt-get install -y \
+    openbox \
+    lightdm \
+    lightdm-gtk-greeter \
+    chromium \
+    xterm \
+    zenity \
+    python3 \
+    freerdp3-x11 \
+    tigervnc-viewer \
+    openssh-server \
+    netcat-openbsd \
+    unclutter \
+    x11-xserver-utils \
+    fonts-dejavu \
+    curl
+info "Paquets installes"
+
+# ── XFREERDP3 SYMLINK ─────────────────────────────────────────────────────────
+ln -sf /usr/bin/xfreerdp3 /usr/local/bin/xfreerdp 2>/dev/null || true
+info "xfreerdp → xfreerdp3"
+
+# ── DIRECTORIES ───────────────────────────────────────────────────────────────
+mkdir -p "$INSTALL_DIR/scripts"
+mkdir -p "$INSTALL_DIR/splash"
+mkdir -p /etc/urrunberri-os
+touch /etc/urrunberri-os/saved_connections.csv
+
+# ── OPENBOX FOR ROOT ──────────────────────────────────────────────────────────
+mkdir -p /root/.config/openbox
+cat > /root/.config/openbox/autostart << 'AUTOSTART'
+#!/bin/bash
+xset s off
+xset s noblank
+xset -dpms
+xsetroot -solid "#0d2233"
+sleep 2
+bash /opt/urrunberri-os/scripts/boot.sh
+AUTOSTART
+chmod +x /root/.config/openbox/autostart
+info "Openbox configure pour root"
+
+# ── LIGHTDM ROOT AUTOLOGIN ────────────────────────────────────────────────────
+cat > /etc/lightdm/lightdm.conf << 'LIGHTDM'
+[Seat:*]
+autologin-user=root
+autologin-user-timeout=0
+user-session=openbox
+greeter-hide-users=true
+LIGHTDM
+info "LightDM autologin root configure"
+
+# ── XORG VT SWITCH ────────────────────────────────────────────────────────────
+mkdir -p /etc/X11/xorg.conf.d
+cat > /etc/X11/xorg.conf.d/99-urrunberri.conf << 'XORG'
+Section "ServerFlags"
+    Option "DontVTSwitch" "false"
+    Option "DontZap" "false"
+EndSection
+XORG
+
+# ── SSH ROOT LOGIN ────────────────────────────────────────────────────────────
+sed -i 's/#PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+grep -q "PermitRootLogin yes" /etc/ssh/sshd_config || echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
+
+# ── DOWNLOAD APP FILES ────────────────────────────────────────────────────────
+info "Telechargement des fichiers depuis GitHub..."
+curl -fsSL "$GITHUB_RAW/scripts/boot.sh" -o "$INSTALL_DIR/scripts/boot.sh"
+curl -fsSL "$GITHUB_RAW/scripts/urrunberri_server.py" -o "$INSTALL_DIR/scripts/urrunberri_server.py"
+curl -fsSL "$GITHUB_RAW/client-ui/splash/login.html" -o "$INSTALL_DIR/splash/login.html"
+curl -fsSL "$GITHUB_RAW/client-ui/splash/urrunberri.png" -o "$INSTALL_DIR/splash/urrunberri.png" 2>/dev/null || true
+
+chmod +x "$INSTALL_DIR/scripts/boot.sh"
+chmod +x "$INSTALL_DIR/scripts/urrunberri_server.py"
+info "Fichiers telecharges"
+
+# ── ENABLE SERVICES ───────────────────────────────────────────────────────────
+systemctl enable lightdm
+systemctl enable ssh
+systemctl start ssh
+systemctl enable getty@tty2.service
+systemctl start getty@tty2.service
+systemctl daemon-reload
+
+info "=== Installation terminee ==="
+info "Redemarrez avec : reboot"
+info "SSH root : ssh root@IP (PermitRootLogin active)"
+info "Ctrl+Alt+F2 : terminal TTY2 disponible"

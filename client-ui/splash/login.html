@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>UrrunBerri OS</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: #0d2233;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(41,182,212,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 85% 85%, rgba(26,143,168,0.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.card {
+  background: rgba(255,255,255,0.04);
+  border: 1.5px solid rgba(41,182,212,0.2);
+  border-radius: 24px;
+  padding: 40px 50px;
+  width: 480px;
+  box-shadow: 0 20px 80px rgba(0,0,0,0.6), 0 0 60px rgba(41,182,212,0.05);
+  position: relative;
+  z-index: 1;
+  animation: fadeIn 0.6s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity:0; transform:translateY(24px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* Logo */
+.logo-wrap {
+  text-align: center;
+  margin-bottom: 28px;
+}
+.logo-wrap img {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 24px rgba(41,182,212,0.25));
+}
+
+/* Section label */
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #29b6d4;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+/* Saved connections */
+.saved-wrap {
+  margin-bottom: 20px;
+}
+
+select {
+  width: 100%;
+  padding: 11px 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(41,182,212,0.2);
+  border-radius: 10px;
+  color: #e0f0f8;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2329b6d4' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  transition: border-color 0.2s;
+}
+select:focus { border-color: #29b6d4; }
+select option { background: #0d2233; color: #e0f0f8; }
+
+/* Divider */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0;
+  color: rgba(255,255,255,0.25);
+  font-size: 11px;
+}
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.1);
+}
+
+/* Form fields */
+.fields { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+
+.row { display: flex; gap: 10px; }
+.row .field { flex: 1; }
+.row .field.port { flex: 0 0 100px; }
+
+.field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 5px;
+}
+
+input {
+  width: 100%;
+  padding: 11px 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  color: #e0f0f8;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+input::placeholder { color: rgba(255,255,255,0.2); }
+input:focus {
+  border-color: #29b6d4;
+  background: rgba(41,182,212,0.06);
+}
+
+/* Buttons */
+.btn-row { display: flex; gap: 10px; }
+
+.btn-connect {
+  flex: 1;
+  padding: 13px;
+  background: linear-gradient(135deg, #29b6d4, #1a8fa8);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 20px rgba(41,182,212,0.3);
+}
+.btn-connect:hover {
+  background: linear-gradient(135deg, #35c8e8, #1f9fbc);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 28px rgba(41,182,212,0.45);
+}
+.btn-connect:active { transform: translateY(0); }
+
+.btn-close {
+  padding: 13px 20px;
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  color: rgba(255,255,255,0.5);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-close:hover {
+  background: rgba(255,80,80,0.15);
+  border-color: rgba(255,80,80,0.3);
+  color: #ff6b6b;
+}
+
+/* Error message */
+.error {
+  display: none;
+  background: rgba(255,80,80,0.1);
+  border: 1px solid rgba(255,80,80,0.3);
+  border-radius: 8px;
+  color: #ff8080;
+  font-size: 12px;
+  padding: 8px 12px;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+/* Lang switcher */
+.langs {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 20px;
+}
+.lang-btn {
+  padding: 4px 10px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(41,182,212,0.15);
+  color: rgba(255,255,255,0.35);
+  font-size: 11px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.15s;
+}
+.lang-btn.active, .lang-btn:hover {
+  background: #29b6d4;
+  color: #fff;
+  border-color: #29b6d4;
+}
+
+.version {
+  position: absolute;
+  bottom: 14px;
+  right: 18px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.15);
+}
+
+/* Loading state */
+.btn-connect.loading {
+  background: rgba(41,182,212,0.4);
+  cursor: not-allowed;
+  transform: none;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <!-- Logo -->
+  <div class="logo-wrap">
+    <img src="http://127.0.0.1:7070/splash/urrunberri.png" alt="UrrunBerri OS" />
+  </div>
+
+  <!-- Saved connections -->
+  <div class="saved-wrap" id="saved-wrap" style="display:none">
+    <div class="section-label" id="lbl-recent">Connexions recentes</div>
+    <select id="saved-select" onchange="onSavedSelect()">
+    </select>
+  </div>
+
+  <div class="divider" id="divider" style="display:none" id="lbl-or">ou nouvelle connexion</div>
+
+  <!-- Error -->
+  <div class="error" id="error-msg">Veuillez renseigner l'adresse IP et le nom d'utilisateur.</div>
+
+  <!-- Fields -->
+  <div class="fields">
+    <div class="row">
+      <div class="field">
+        <label id="lbl-ip">Adresse IP</label>
+        <input type="text" id="ip" placeholder="192.168.1.10" autocomplete="off" />
+      </div>
+      <div class="field port">
+        <label id="lbl-port">Port</label>
+        <input type="text" id="port" value="3389" />
+      </div>
+    </div>
+    <div class="field">
+      <label id="lbl-user">Utilisateur</label>
+      <input type="text" id="username" placeholder="rdpuser" autocomplete="off" />
+    </div>
+    <div class="field">
+      <label id="lbl-pass">Mot de passe</label>
+      <input type="password" id="password" placeholder="••••••••" />
+    </div>
+  </div>
+
+  <!-- Buttons -->
+  <div class="btn-row">
+    <button class="btn-connect" id="btn-connect" onclick="connect()">
+      <span id="btn-text">Connexion</span>
+    </button>
+    <button class="btn-close" onclick="closeApp()">✕</button>
+  </div>
+
+  <!-- Languages -->
+  <div class="langs">
+    <button class="lang-btn active" onclick="setLang('fr')">🇫🇷 FR</button>
+    <button class="lang-btn" onclick="setLang('en')">🇬🇧 EN</button>
+    <button class="lang-btn" onclick="setLang('es')">🇪🇸 ES</button>
+    <button class="lang-btn" onclick="setLang('eu')">🏴 EU</button>
+  </div>
+
+  <div class="version">UrrunBerri OS v1.0 — Openema SARL — github.com/matthewc00002/urrunberri1</div>
+</div>
+
+<script>
+// ── i18n ────────────────────────────────────────────────────────────────────
+const i18n = {
+  fr: {
+    recent: 'Connexions récentes', or: 'ou nouvelle connexion',
+    ip: 'Adresse IP', port: 'Port', user: 'Utilisateur', pass: 'Mot de passe',
+    connect: 'Connexion', connecting: 'Connexion...', new: 'Nouvelle connexion',
+    error: 'Veuillez renseigner l\'adresse IP et le nom d\'utilisateur.'
+  },
+  en: {
+    recent: 'Recent connections', or: 'or new connection',
+    ip: 'IP Address', port: 'Port', user: 'Username', pass: 'Password',
+    connect: 'Connect', connecting: 'Connecting...', new: 'New connection',
+    error: 'Please enter IP address and username.'
+  },
+  es: {
+    recent: 'Conexiones recientes', or: 'o nueva conexion',
+    ip: 'Dirección IP', port: 'Puerto', user: 'Usuario', pass: 'Contraseña',
+    connect: 'Conectar', connecting: 'Conectando...', new: 'Nueva conexión',
+    error: 'Por favor, introduce la IP y el nombre de usuario.'
+  },
+  eu: {
+    recent: 'Azken konexioak', or: 'edo konexio berria',
+    ip: 'IP helbidea', port: 'Portua', user: 'Erabiltzailea', pass: 'Pasahitza',
+    connect: 'Konektatu', connecting: 'Konektatzen...', new: 'Konexio berria',
+    error: 'Mesedez, sartu IP helbidea eta erabiltzaile izena.'
+  }
+};
+
+let lang = 'fr';
+
+function setLang(l) {
+  lang = l;
+  const t = i18n[l] || i18n.fr;
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.getAttribute('onclick').includes(`'${l}'`));
+  });
+  document.getElementById('lbl-recent').textContent = t.recent;
+  document.getElementById('divider').textContent = t.or;
+  document.getElementById('lbl-ip').textContent = t.ip;
+  document.getElementById('lbl-port').textContent = t.port;
+  document.getElementById('lbl-user').textContent = t.user;
+  document.getElementById('lbl-pass').textContent = t.pass;
+  document.getElementById('btn-text').textContent = t.connect;
+  document.getElementById('error-msg').textContent = t.error;
+  // Update new connection option
+  const sel = document.getElementById('saved-select');
+  if (sel.options.length > 0) {
+    sel.options[sel.options.length - 1].text = t.new;
+  }
+}
+
+// ── Load saved connections from file via fetch ───────────────────────────────
+let savedConnections = __SAVED_CONNECTIONS__;
+if (!Array.isArray(savedConnections)) savedConnections = [];
+
+function loadSaved() {
+  const sel = document.getElementById('saved-select');
+  const wrap = document.getElementById('saved-wrap');
+  const div = document.getElementById('divider');
+
+  if (savedConnections && savedConnections.length > 0) {
+    sel.innerHTML = '';
+    savedConnections.forEach((c, i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      const label = c.name ? c.name + ' — ' + c.host : c.host + ':' + c.port + '  (' + c.user + ')';
+      opt.text = label;
+      sel.appendChild(opt);
+    });
+    const newOpt = document.createElement('option');
+    newOpt.value = 'new';
+    newOpt.text = i18n[lang].new;
+    sel.appendChild(newOpt);
+
+    wrap.style.display = 'block';
+    div.style.display = 'flex';
+    onSavedSelect();
+  }
+}
+
+function onSavedSelect() {
+  const sel = document.getElementById('saved-select');
+  const val = sel.value;
+  if (val === 'new') {
+    document.getElementById('ip').value = '';
+    document.getElementById('port').value = '3389';
+    document.getElementById('username').value = '';
+    document.getElementById('password').value = '';
+    document.getElementById('ip').focus();
+  } else {
+    const c = savedConnections[parseInt(val)];
+    if (c) {
+      document.getElementById('ip').value = c.host;
+      document.getElementById('port').value = c.port;
+      document.getElementById('username').value = c.user;
+      document.getElementById('password').value = '';
+      document.getElementById('password').focus();
+    }
+  }
+}
+
+// ── Connect ──────────────────────────────────────────────────────────────────
+function connect() {
+  const ip   = document.getElementById('ip').value.trim();
+  const port = document.getElementById('port').value.trim() || '3389';
+  const user = document.getElementById('username').value.trim();
+  const pass = document.getElementById('password').value;
+  const err  = document.getElementById('error-msg');
+
+  if (!ip || !user) {
+    err.style.display = 'block';
+    return;
+  }
+  err.style.display = 'none';
+
+  // Show loading state
+  const btn = document.getElementById('btn-connect');
+  btn.classList.add('loading');
+  document.getElementById('btn-text').textContent = i18n[lang].connecting;
+
+  const result = `${ip}|${port}|${user}|${pass}|||rdp|1920x1080|0`;
+  fetch('http://127.0.0.1:7070/connect?data=' + encodeURIComponent(result))
+    .catch(() => {});
+}
+
+function closeApp() {
+  fetch('http://127.0.0.1:7070/close').catch(() => {});
+}
+
+// ── Enter key ────────────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') connect();
+});
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+loadSaved();
+</script>
+</body>
+</html>
