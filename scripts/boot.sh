@@ -49,24 +49,43 @@ SERVER_PID=$!
 sleep 1
 echo "[UrrunBerri OS] Serveur Python PID: $SERVER_PID"
 
+# ── ENSURE SERVER IS RUNNING ─────────────────────────────────────────────────
+ensure_server() {
+    if ! kill -0 "$SERVER_PID" 2>/dev/null; then
+        echo "[UrrunBerri OS] Redemarrage serveur Python..."
+        python3 "$SERVER_SCRIPT" &
+        SERVER_PID=$!
+        sleep 1
+    fi
+}
+
 # ── WAIT FOR ACTION ───────────────────────────────────────────────────────────
 wait_for_action() {
     rm -f "$ACTION_FILE" "$RESULT_FILE"
     while true; do
+        # If Chromium died without action, return 2 to trigger restart
+        if ! kill -0 "$CHROMIUM_PID" 2>/dev/null; then
+            return 2
+        fi
         sleep 0.3
         [[ -f "$ACTION_FILE" ]] && break
     done
+    return 0
 }
 
 # ── SHOW LOGIN PAGE ───────────────────────────────────────────────────────────
 show_login() {
     rm -f "$ACTION_FILE" "$RESULT_FILE"
 
+    ensure_server
+
     SCR_W=${RESOLUTION%%x*}
     SCR_H=${RESOLUTION##*x}
-    WIN_W=520; WIN_H=780
+    WIN_W=520; WIN_H=820
     POS_X=$(( (SCR_W - WIN_W) / 2 ))
     POS_Y=$(( (SCR_H - WIN_H) / 2 ))
+
+    xsetroot -solid "#0d2233" 2>/dev/null || true
 
     chromium \
         --no-sandbox \
@@ -78,6 +97,13 @@ show_login() {
     CHROMIUM_PID=$!
 
     wait_for_action
+    local wait_ret=$?
+
+    # Chromium died unexpectedly — restart login
+    if [[ $wait_ret -eq 2 ]]; then
+        echo "[UrrunBerri OS] Chromium mort — redemarrage..."
+        return 1
+    fi
 
     kill $CHROMIUM_PID 2>/dev/null || true
     sleep 0.5
@@ -106,9 +132,9 @@ show_login() {
         USERNAME=$(echo "$data"  | cut -d'|' -f3)
         PASSWORD=$(echo "$data"  | cut -d'|' -f4)
         DOMAIN=$(echo "$data"    | cut -d'|' -f5)
-        PROTOCOL=$(echo "$data"  | cut -d'|' -f6)
-        RES=$(echo "$data"       | cut -d'|' -f7)
-        MULTIMON=$(echo "$data"  | cut -d'|' -f8)
+        PROTOCOL=$(echo "$data"  | cut -d'|' -f7)
+        RES=$(echo "$data"       | cut -d'|' -f8)
+        MULTIMON=$(echo "$data"  | cut -d'|' -f9)
 
         [[ -z "$CONN_HOST" || -z "$USERNAME" ]] && return 1
         [[ -z "$CONN_PORT" ]] && CONN_PORT=3389
@@ -118,7 +144,7 @@ show_login() {
         if [[ -z "$PASSWORD" ]]; then
             PASSWORD=$(zenity --password \
                 --title="UrrunBerri OS" \
-                --text="Mot de passe pour <b>${USERNAME}@${CONN_HOST}</b>" \
+                --text="Mot de passe pour ${USERNAME}@${CONN_HOST}" \
                 2>/dev/null)
             [[ -z "$PASSWORD" ]] && return 1
         fi
@@ -132,7 +158,7 @@ show_disconnect_btn() {
     (
         zenity --question \
             --title="UrrunBerri OS" \
-            --text="Session active\n<b>${CONN_HOST}:${CONN_PORT}</b>\nUtilisateur : <b>${USERNAME}</b>\n\nFermer la session ?" \
+            --text="Session active\n${CONN_HOST}:${CONN_PORT}\nUtilisateur : ${USERNAME}\n\nFermer la session ?" \
             --ok-label="Fermer" --cancel-label="Continuer" \
             --width=300 2>/dev/null
         [[ $? -eq 0 ]] && kill "$RDP_PID" 2>/dev/null || true
