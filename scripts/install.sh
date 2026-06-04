@@ -73,6 +73,10 @@ greeter-hide-users=true
 LIGHTDM
 info "LightDM autologin root configure"
 
+# ── FIX PAM ROOT AUTOLOGIN ────────────────────────────────────────────────────
+sed -i 's/^auth\s*required\s*pam_succeed_if.so.*user != root.*/# &/' /etc/pam.d/lightdm-autologin
+info "PAM root autologin fix applique"
+
 # ── XORG VT SWITCH ────────────────────────────────────────────────────────────
 mkdir -p /etc/X11/xorg.conf.d
 cat > /etc/X11/xorg.conf.d/99-urrunberri.conf << 'XORG'
