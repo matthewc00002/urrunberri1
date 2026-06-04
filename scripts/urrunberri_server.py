@@ -35,35 +35,46 @@ def load_connections():
                     if not line:
                         continue
                     parts = line.split('|')
-                    while len(parts) < 6:
+                    while len(parts) < 8:
                         parts.append('')
                     conns.append({
-                        'host': parts[0], 'port': parts[1],
-                        'user': parts[2], 'domain': parts[3],
-                        'name': parts[4], 'proto': parts[5] or 'rdp'
+                        'host':       parts[0],
+                        'port':       parts[1],
+                        'user':       parts[2],
+                        'domain':     parts[3],
+                        'name':       parts[4],
+                        'protocol':   parts[5] or 'rdp',
+                        'resolution': parts[6] or '1920x1080',
+                        'multimon':   parts[7] or '0'
                     })
     except:
         pass
     return conns
 
-def save_connection(host, port, user, domain='', name='', proto='rdp'):
+def save_connection(host, port, user, domain='', name='', protocol='rdp', resolution='1920x1080', multimon='0'):
     if not host or not user:
-        return
+        return load_connections()
     conns = [c for c in load_connections()
              if not (c['host'] == host and c['port'] == port and c['user'] == user)]
-    conns.insert(0, {'host': host, 'port': port, 'user': user,
-                     'domain': domain, 'name': name, 'proto': proto or 'rdp'})
+    conns.insert(0, {
+        'host': host, 'port': port, 'user': user,
+        'domain': domain, 'name': name, 'protocol': protocol or 'rdp',
+        'resolution': resolution or '1920x1080', 'multimon': multimon or '0'
+    })
     conns = conns[:10]
     with open(SAVED_FILE, 'w') as f:
         for c in conns:
-            f.write(f"{c['host']}|{c['port']}|{c['user']}|{c['domain']}|{c['name']}|{c['proto']}\n")
+            f.write(f"{c['host']}|{c['port']}|{c['user']}|{c['domain']}|{c['name']}|{c['protocol']}|{c['resolution']}|{c['multimon']}\n")
+    return conns
 
-def delete_connection(host, port, user):
-    conns = [c for c in load_connections()
-             if not (c['host'] == host and c['port'] == port and c['user'] == user)]
+def delete_connection(index):
+    conns = load_connections()
+    if 0 <= index < len(conns):
+        conns.pop(index)
     with open(SAVED_FILE, 'w') as f:
         for c in conns:
-            f.write(f"{c['host']}|{c['port']}|{c['user']}|{c['domain']}|{c['name']}|{c['proto']}\n")
+            f.write(f"{c['host']}|{c['port']}|{c['user']}|{c['domain']}|{c['name']}|{c['protocol']}|{c['resolution']}|{c['multimon']}\n")
+    return conns
 
 def test_connection(host, port):
     try:
@@ -78,26 +89,72 @@ class UrrunBerriHandler(http.server.BaseHTTPRequestHandler):
     def log_message(self, format, *args):
         pass
 
+    def send_json(self, obj):
+        body = json.dumps(obj).encode('utf-8')
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Content-Length', len(body))
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', '*')
+        self.end_headers()
+        self.wfile.write(body)
+
     def send_cors(self, body='OK', content_type='text/plain'):
         encoded = body.encode('utf-8')
         self.send_response(200)
         self.send_header('Content-Type', content_type)
         self.send_header('Content-Length', len(encoded))
         self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
         self.send_header('Access-Control-Allow-Headers', '*')
         self.end_headers()
         self.wfile.write(encoded)
 
+    def read_body(self):
+        length = int(self.headers.get('Content-Length', 0))
+        return self.rfile.read(length) if length else b''
+
     def do_OPTIONS(self):
         self.send_cors()
+
+    def do_POST(self):
+        parsed = urllib.parse.urlparse(self.path)
+        path = parsed.path
+        body = self.read_body()
+
+        try:
+            data = json.loads(body)
+        except:
+            data = {}
+
+        if path == '/save':
+            conns = save_connection(
+                host       = data.get('host', ''),
+                port       = data.get('port', '3389'),
+                user       = data.get('user', ''),
+                domain     = data.get('domain', ''),
+                name       = data.get('name', ''),
+                protocol   = data.get('protocol', 'rdp'),
+                resolution = data.get('resolution', '1920x1080'),
+                multimon   = data.get('multimon', '0')
+            )
+            self.send_json({'ok': True, 'connections': conns})
+            return
+
+        if path == '/delete':
+            index = data.get('index', -1)
+            conns = delete_connection(int(index))
+            self.send_json({'ok': True, 'connections': conns})
+            return
+
+        self.send_cors('ok')
 
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path
         params = urllib.parse.parse_qs(parsed.query)
 
-        # Serve login.html with injected connections
         if path == '/splash/login.html':
             try:
                 conns = load_connections()
@@ -118,7 +175,6 @@ class UrrunBerriHandler(http.server.BaseHTTPRequestHandler):
                 self.wfile.write(str(e).encode())
             return
 
-        # Serve logo
         if path == '/splash/urrunberri.png':
             try:
                 with open(f"{SPLASH_DIR}/urrunberri.png", 'rb') as f:
@@ -134,7 +190,6 @@ class UrrunBerriHandler(http.server.BaseHTTPRequestHandler):
                 self.end_headers()
             return
 
-        # Test connection
         if path == '/test':
             host = params.get('host', [''])[0]
             port = params.get('port', ['3389'])[0]
@@ -142,7 +197,6 @@ class UrrunBerriHandler(http.server.BaseHTTPRequestHandler):
             self.send_cors(result)
             return
 
-        # Actions
         if path == '/shutdown':
             self.send_cors('OK')
             write_action('shutdown')
@@ -158,29 +212,8 @@ class UrrunBerriHandler(http.server.BaseHTTPRequestHandler):
             write_action('terminal')
             return
 
-        if path == '/checkupdate':
-            self.send_cors('current')
-            return
-
-        # Connect / Save / Delete
         if path == '/connect':
             data = params.get('data', [''])[0]
-
-            if data.startswith('save|'):
-                parts = data.split('|')
-                while len(parts) < 7: parts.append('')
-                save_connection(parts[1], parts[2], parts[3], parts[4], parts[5], parts[6])
-                self.send_cors('saved')
-                return
-
-            if data.startswith('delete|'):
-                parts = data.split('|')
-                while len(parts) < 4: parts.append('')
-                delete_connection(parts[1], parts[2], parts[3])
-                self.send_cors('deleted')
-                return
-
-            # Regular connect
             write_action('connect', data)
             self.send_cors('connecting')
             return
