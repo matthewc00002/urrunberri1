@@ -202,6 +202,11 @@ class UrrunBerriHandler(http.server.BaseHTTPRequestHandler):
             write_action('shutdown')
             return
 
+        if path == '/reboot':
+            self.send_cors('OK')
+            write_action('reboot')
+            return
+
         if path == '/close':
             self.send_cors('OK')
             write_action('close')
