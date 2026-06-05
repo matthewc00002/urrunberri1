@@ -49,7 +49,7 @@ SERVER_PID=$!
 sleep 1
 echo "[UrrunBerri OS] Serveur Python PID: $SERVER_PID"
 
-# ── ENSURE SERVER IS RUNNING ─────────────────────────────────────────────────
+# ── ENSURE SERVER IS RUNNING ──────────────────────────────────────────────────
 ensure_server() {
     if ! kill -0 "$SERVER_PID" 2>/dev/null; then
         echo "[UrrunBerri OS] Redemarrage serveur Python..."
@@ -63,7 +63,6 @@ ensure_server() {
 wait_for_action() {
     rm -f "$ACTION_FILE" "$RESULT_FILE"
     while true; do
-        # If Chromium died without action, return 2 to trigger restart
         if ! kill -0 "$CHROMIUM_PID" 2>/dev/null; then
             return 2
         fi
@@ -99,7 +98,6 @@ show_login() {
     wait_for_action
     local wait_ret=$?
 
-    # Chromium died unexpectedly — restart login
     if [[ $wait_ret -eq 2 ]]; then
         echo "[UrrunBerri OS] Chromium mort — redemarrage..."
         return 1
@@ -114,6 +112,13 @@ show_login() {
         kill $SERVER_PID 2>/dev/null || true
         sleep 1
         systemctl poweroff
+        exit 0
+    fi
+
+    if [[ "$ACTION" == "reboot" ]]; then
+        kill $SERVER_PID 2>/dev/null || true
+        sleep 1
+        systemctl reboot
         exit 0
     fi
 
@@ -139,7 +144,13 @@ show_login() {
         [[ -z "$CONN_HOST" || -z "$USERNAME" ]] && return 1
         [[ -z "$CONN_PORT" ]] && CONN_PORT=3389
         [[ -z "$PROTOCOL" ]] && PROTOCOL=rdp
-        [[ -n "$RES" && "$RES" != "undefined" ]] && RESOLUTION="$RES"
+        [[ -n "$RES" && "$RES" != "undefined" && "$RES" != "auto" ]] && RESOLUTION="$RES"
+
+        if [[ "$RES" == "auto" ]]; then
+            RESOLUTION=$(DISPLAY=:0 XAUTHORITY=/var/run/lightdm/root/:0 xrandr 2>/dev/null | grep '\*' | awk '{print $1}' | head -1)
+            [[ -z "$RESOLUTION" ]] && RESOLUTION="1920x1080"
+            echo "[UrrunBerri OS] Resolution auto: $RESOLUTION"
+        fi
 
         if [[ -z "$PASSWORD" ]]; then
             PASSWORD=$(zenity --password \
@@ -205,12 +216,6 @@ while true; do
                 -fa "Monospace" -fs 12 \
                 -title "SSH — ${CONN_HOST}" \
                 -e "ssh ${USERNAME}@${CONN_HOST} -p ${CONN_PORT}" 2>/dev/null &
-            RDP_PID=$!
-            ;;
-        web)
-            URL="$CONN_HOST"
-            [[ "$URL" != http* ]] && URL="https://${CONN_HOST}"
-            firefox --kiosk "$URL" 2>/dev/null &
             RDP_PID=$!
             ;;
     esac
