@@ -135,9 +135,9 @@ input:focus {
   text-transform: none; letter-spacing: 0;
   cursor: pointer; margin-bottom: 0;
 }
-.btn-row { display: flex; gap: 10px; }
+.btn-row { display: flex; gap: 8px; }
 .btn-connect {
-  flex: 1; padding: 13px;
+  flex: 2; padding: 13px;
   background: linear-gradient(135deg, #29b6d4, #1a8fa8);
   border: none; border-radius: 12px; color: white;
   font-family: 'DM Sans', sans-serif;
@@ -151,18 +151,31 @@ input:focus {
   box-shadow: 0 6px 28px rgba(41,182,212,0.45);
 }
 .btn-connect:active { transform: translateY(0); }
-.btn-close {
-  padding: 13px 20px;
-  background: rgba(255,255,255,0.06);
-  border: 1.5px solid rgba(255,255,255,0.12);
-  border-radius: 12px; color: rgba(255,255,255,0.5);
+.btn-stop {
+  flex: 1; padding: 13px;
+  background: rgba(255,80,80,0.12);
+  border: 1.5px solid rgba(255,80,80,0.3);
+  border-radius: 12px; color: #ff6b6b;
   font-family: 'DM Sans', sans-serif;
-  font-size: 13px; cursor: pointer; transition: all 0.2s;
+  font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
 }
-.btn-close:hover {
-  background: rgba(255,80,80,0.15);
-  border-color: rgba(255,80,80,0.3);
-  color: #ff6b6b;
+.btn-stop:hover {
+  background: rgba(255,80,80,0.25);
+  border-color: rgba(255,80,80,0.5);
+}
+.btn-restart {
+  flex: 1; padding: 13px;
+  background: rgba(255,165,0,0.12);
+  border: 1.5px solid rgba(255,165,0,0.3);
+  border-radius: 12px; color: #ffaa00;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-restart:hover {
+  background: rgba(255,165,0,0.25);
+  border-color: rgba(255,165,0,0.5);
 }
 .error {
   display: none;
@@ -254,12 +267,12 @@ input:focus {
           <option value="rdp">RDP</option>
           <option value="vnc">VNC</option>
           <option value="ssh">SSH</option>
-          <option value="web">Web</option>
         </select>
       </div>
       <div class="field short">
         <label id="lbl-res">Resolution</label>
         <select id="resolution">
+          <option value="auto">Auto</option>
           <option value="1920x1080">1920x1080</option>
           <option value="1280x720">1280x720</option>
           <option value="1600x900">1600x900</option>
@@ -277,7 +290,8 @@ input:focus {
     <button class="btn-connect" id="btn-connect" onclick="connect()">
       <span id="btn-text">Connexion</span>
     </button>
-    <button class="btn-close" onclick="closeApp()">✕</button>
+    <button class="btn-stop" onclick="shutdown()" id="btn-stop">⏻ Arrêt</button>
+    <button class="btn-restart" onclick="reboot()" id="btn-restart">↺ Redémarrer</button>
   </div>
   <div class="langs">
     <button class="lang-btn active" onclick="setLang('fr')">FR</button>
@@ -285,14 +299,14 @@ input:focus {
     <button class="lang-btn" onclick="setLang('es')">ES</button>
     <button class="lang-btn" onclick="setLang('eu')">EU</button>
   </div>
-  <div class="version">UrrunBerri OS v2.0 — Openema SARL</div>
+  <div class="version">UrrunBerri OS v3.0 — Openema SARL</div>
 </div>
 <script>
 const i18n = {
-  fr: { recent:'Connexions recentes', or:'ou nouvelle connexion', ip:'Adresse IP', port:'Port', user:'Utilisateur', pass:'Mot de passe', proto:'Protocole', res:'Resolution', multimon:'Multi-ecrans', connect:'Connexion', connecting:'Connexion...', new:'Nouvelle connexion', error:'Veuillez renseigner IP et utilisateur.', saved:'Connexion sauvegardee.', save:'Sauvegarder', save2:'Sauvegarder cette connexion', del:'Supprimer', delconfirm:'Supprimer cette connexion ?' },
-  en: { recent:'Recent connections', or:'or new connection', ip:'IP Address', port:'Port', user:'Username', pass:'Password', proto:'Protocol', res:'Resolution', multimon:'Multi-screen', connect:'Connect', connecting:'Connecting...', new:'New connection', error:'Please enter IP and username.', saved:'Connection saved.', save:'Save', save2:'Save this connection', del:'Delete', delconfirm:'Delete this connection?' },
-  es: { recent:'Conexiones recientes', or:'o nueva conexion', ip:'Direccion IP', port:'Puerto', user:'Usuario', pass:'Contrasena', proto:'Protocolo', res:'Resolucion', multimon:'Multi-pantalla', connect:'Conectar', connecting:'Conectando...', new:'Nueva conexion', error:'Introduce IP y usuario.', saved:'Conexion guardada.', save:'Guardar', save2:'Guardar esta conexion', del:'Eliminar', delconfirm:'Eliminar esta conexion?' },
-  eu: { recent:'Azken konexioak', or:'edo konexio berria', ip:'IP helbidea', port:'Portua', user:'Erabiltzailea', pass:'Pasahitza', proto:'Protokoloa', res:'Bereizmena', multimon:'Pantaila anitz', connect:'Konektatu', connecting:'Konektatzen...', new:'Konexio berria', error:'Sartu IP eta erabiltzailea.', saved:'Konexioa gordeta.', save:'Gorde', save2:'Konexio hau gorde', del:'Ezabatu', delconfirm:'Konexio hau ezabatu?' }
+  fr: { recent:'Connexions recentes', or:'ou nouvelle connexion', ip:'Adresse IP', port:'Port', user:'Utilisateur', pass:'Mot de passe', proto:'Protocole', res:'Resolution', multimon:'Multi-ecrans', connect:'Connexion', connecting:'Connexion...', new:'Nouvelle connexion', error:'Veuillez renseigner IP et utilisateur.', saved:'Connexion sauvegardee.', save:'Sauvegarder', save2:'Sauvegarder cette connexion', del:'Supprimer', delconfirm:'Supprimer cette connexion ?', stop:'Arret', restart:'Redemarrer', shutdownconfirm:'Eteindre la machine ?', rebootconfirm:'Redemarrer la machine ?' },
+  en: { recent:'Recent connections', or:'or new connection', ip:'IP Address', port:'Port', user:'Username', pass:'Password', proto:'Protocol', res:'Resolution', multimon:'Multi-screen', connect:'Connect', connecting:'Connecting...', new:'New connection', error:'Please enter IP and username.', saved:'Connection saved.', save:'Save', save2:'Save this connection', del:'Delete', delconfirm:'Delete this connection?', stop:'Shutdown', restart:'Restart', shutdownconfirm:'Shut down the machine?', rebootconfirm:'Restart the machine?' },
+  es: { recent:'Conexiones recientes', or:'o nueva conexion', ip:'Direccion IP', port:'Puerto', user:'Usuario', pass:'Contrasena', proto:'Protocolo', res:'Resolucion', multimon:'Multi-pantalla', connect:'Conectar', connecting:'Conectando...', new:'Nueva conexion', error:'Introduce IP y usuario.', saved:'Conexion guardada.', save:'Guardar', save2:'Guardar esta conexion', del:'Eliminar', delconfirm:'Eliminar esta conexion?', stop:'Apagar', restart:'Reiniciar', shutdownconfirm:'Apagar la maquina?', rebootconfirm:'Reiniciar la maquina?' },
+  eu: { recent:'Azken konexioak', or:'edo konexio berria', ip:'IP helbidea', port:'Portua', user:'Erabiltzailea', pass:'Pasahitza', proto:'Protokoloa', res:'Bereizmena', multimon:'Pantaila anitz', connect:'Konektatu', connecting:'Konektatzen...', new:'Konexio berria', error:'Sartu IP eta erabiltzailea.', saved:'Konexioa gordeta.', save:'Gorde', save2:'Konexio hau gorde', del:'Ezabatu', delconfirm:'Konexio hau ezabatu?', stop:'Itzali', restart:'Berrabiarazi', shutdownconfirm:'Makina itzali?', rebootconfirm:'Makina berrabiarazi?' }
 };
 let lang = 'fr';
 function setLang(l) {
@@ -315,12 +329,14 @@ function setLang(l) {
   document.getElementById('btn-save').textContent = t.save;
   document.getElementById('btn-save2').textContent = t.save2;
   document.getElementById('btn-delete').textContent = t.del;
+  document.getElementById('btn-stop').textContent = '⏻ ' + t.stop;
+  document.getElementById('btn-restart').textContent = '↺ ' + t.restart;
   const sel = document.getElementById('saved-select');
   if (sel.options.length > 0) sel.options[sel.options.length-1].text = t.new;
 }
 function onProtocolChange() {
   const proto = document.getElementById('protocol').value;
-  const defaults = { rdp:'3389', vnc:'5900', ssh:'22', web:'80' };
+  const defaults = { rdp:'3389', vnc:'5900', ssh:'22' };
   document.getElementById('port').value = defaults[proto] || '3389';
   const rdpOnly = proto === 'rdp';
   document.getElementById('resolution').parentElement.style.opacity = rdpOnly ? '1' : '0.35';
@@ -363,7 +379,7 @@ function onSavedSelect() {
     document.getElementById('username').value = '';
     document.getElementById('password').value = '';
     document.getElementById('protocol').value = 'rdp';
-    document.getElementById('resolution').value = '1920x1080';
+    document.getElementById('resolution').value = 'auto';
     document.getElementById('multimon').checked = false;
     document.getElementById('ip').focus();
   } else {
@@ -374,7 +390,7 @@ function onSavedSelect() {
       document.getElementById('username').value = c.user || '';
       document.getElementById('password').value = '';
       document.getElementById('protocol').value = c.protocol || 'rdp';
-      document.getElementById('resolution').value = c.resolution || '1920x1080';
+      document.getElementById('resolution').value = c.resolution || 'auto';
       document.getElementById('multimon').checked = c.multimon == '1';
       onProtocolChange();
       document.getElementById('password').focus();
@@ -433,17 +449,23 @@ function connect() {
   if (!ip || !user) { document.getElementById('error-msg').style.display='block'; return; }
   document.getElementById('error-msg').style.display='none';
   const btn = document.getElementById('btn-connect');
-  btn.classList.add('loading');
+  btn.classList.add('loading'
+   );
   document.getElementById('btn-text').textContent = i18n[lang].connecting;
   const result = ip+'|'+port+'|'+user+'|'+pass+'|||'+protocol+'|'+res+'|'+multimon;
   fetch('http://127.0.0.1:7070/connect?data='+encodeURIComponent(result)).catch(()=>{});
 }
-function closeApp() {
-  fetch('http://127.0.0.1:7070/close').catch(()=>{});
+function shutdown() {
+  if (!confirm(i18n[lang].shutdownconfirm)) return;
+  fetch('http://127.0.0.1:7070/shutdown').catch(()=>{});
+}
+function reboot() {
+  if (!confirm(i18n[lang].rebootconfirm)) return;
+  fetch('http://127.0.0.1:7070/reboot').catch(()=>{});
 }
 document.addEventListener('keydown', e => { if (e.key==='Enter') connect(); });
 renderSaved();
 onProtocolChange();
 </script>
 </body>
-</html>
+</html>                 
