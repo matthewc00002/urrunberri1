@@ -87,10 +87,11 @@ show_login() {
     xsetroot -solid "#eef2f7" 2>/dev/null || true
 
     chromium \
+        --no-sandbox \
+        --disable-gpu \
         --app="http://127.0.0.1:7070/splash/login.html" \
         --window-size=${WIN_W},${WIN_H} \
         --window-position=${POS_X},${POS_Y} \
-        --test-type \
         2>/dev/null &
     CHROMIUM_PID=$!
 
