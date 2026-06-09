@@ -1,4 +1,4 @@
-      <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -41,7 +41,7 @@ body::before {
 }
 .logo-wrap { text-align: center; margin-bottom: 22px; }
 .logo-wrap img {
-  width: 160px; height: 160px;
+  width: 220px; height: auto;
   object-fit: contain;
   filter: drop-shadow(0 4px 16px rgba(35,82,190,0.15));
 }
@@ -118,10 +118,7 @@ input {
   transition: border-color 0.2s, background 0.2s;
 }
 input::placeholder { color: #8a9ab8; }
-input:focus {
-  border-color: #2352be;
-  background: #fff;
-}
+input:focus { border-color: #2352be; background: #fff; }
 .check-row {
   display: flex; align-items: center; gap: 10px; margin-top: 2px;
 }
@@ -153,30 +150,24 @@ input:focus {
 .btn-connect:active { transform: translateY(0); }
 .btn-stop {
   flex: 1; padding: 13px;
-  background: rgba(220,53,69,0.08);
-  border: 1.5px solid rgba(220,53,69,0.25);
-  border-radius: 10px; color: #dc3545;
+  background: #dc3545;
+  border: none;
+  border-radius: 10px; color: #ffffff;
   font-family: 'DM Sans', sans-serif;
   font-size: 12px; font-weight: 600;
   cursor: pointer; transition: all 0.2s;
 }
-.btn-stop:hover {
-  background: rgba(220,53,69,0.15);
-  border-color: rgba(220,53,69,0.4);
-}
+.btn-stop:hover { background: #b02a37; }
 .btn-restart {
   flex: 1; padding: 13px;
-  background: rgba(255,140,0,0.08);
-  border: 1.5px solid rgba(255,140,0,0.25);
-  border-radius: 10px; color: #e67e00;
+  background: #e67e00;
+  border: none;
+  border-radius: 10px; color: #ffffff;
   font-family: 'DM Sans', sans-serif;
   font-size: 12px; font-weight: 600;
   cursor: pointer; transition: all 0.2s;
 }
-.btn-restart:hover {
-  background: rgba(255,140,0,0.15);
-  border-color: rgba(255,140,0,0.4);
-}
+.btn-restart:hover { background: #c46e00; }
 .error {
   display: none;
   background: rgba(220,53,69,0.08);
@@ -239,13 +230,13 @@ input:focus {
     </div>
   </div>
   <div class="divider" id="divider" style="display:none">ou nouvelle connexion</div>
-  <div class="error" id="error-msg">Veuillez renseigner l'adresse IP et le nom d'utilisateur.</div>
+  <div class="error" id="error-msg">Veuillez renseigner l'adresse IP / DNS et le nom d'utilisateur.</div>
   <div class="success" id="success-msg">Connexion sauvegardee.</div>
   <div class="fields">
     <div class="row">
       <div class="field">
-        <label id="lbl-ip">Adresse IP</label>
-        <input type="text" id="ip" placeholder="192.168.1.10" autocomplete="off" />
+        <label id="lbl-ip">Adresse IP / DNS</label>
+        <input type="text" id="ip" placeholder="192.168.1.10 ou serveur.local" autocomplete="off" />
       </div>
       <div class="field port">
         <label id="lbl-port">Port</label>
@@ -303,10 +294,10 @@ input:focus {
 </div>
 <script>
 const i18n = {
-  fr: { recent:'Connexions recentes', or:'ou nouvelle connexion', ip:'Adresse IP', port:'Port', user:'Utilisateur', pass:'Mot de passe', proto:'Protocole', res:'Resolution', multimon:'Multi-ecrans', connect:'Connexion', connecting:'Connexion...', new:'Nouvelle connexion', error:'Veuillez renseigner IP et utilisateur.', saved:'Connexion sauvegardee.', save:'Sauvegarder', save2:'Sauvegarder cette connexion', del:'Supprimer', delconfirm:'Supprimer cette connexion ?', stop:'Arret', restart:'Redemarrer', shutdownconfirm:'Eteindre la machine ?', rebootconfirm:'Redemarrer la machine ?' },
-  en: { recent:'Recent connections', or:'or new connection', ip:'IP Address', port:'Port', user:'Username', pass:'Password', proto:'Protocol', res:'Resolution', multimon:'Multi-screen', connect:'Connect', connecting:'Connecting...', new:'New connection', error:'Please enter IP and username.', saved:'Connection saved.', save:'Save', save2:'Save this connection', del:'Delete', delconfirm:'Delete this connection?', stop:'Shutdown', restart:'Restart', shutdownconfirm:'Shut down the machine?', rebootconfirm:'Restart the machine?' },
-  es: { recent:'Conexiones recientes', or:'o nueva conexion', ip:'Direccion IP', port:'Puerto', user:'Usuario', pass:'Contrasena', proto:'Protocolo', res:'Resolucion', multimon:'Multi-pantalla', connect:'Conectar', connecting:'Conectando...', new:'Nueva conexion', error:'Introduce IP y usuario.', saved:'Conexion guardada.', save:'Guardar', save2:'Guardar esta conexion', del:'Eliminar', delconfirm:'Eliminar esta conexion?', stop:'Apagar', restart:'Reiniciar', shutdownconfirm:'Apagar la maquina?', rebootconfirm:'Reiniciar la maquina?' },
-  eu: { recent:'Azken konexioak', or:'edo konexio berria', ip:'IP helbidea', port:'Portua', user:'Erabiltzailea', pass:'Pasahitza', proto:'Protokoloa', res:'Bereizmena', multimon:'Pantaila anitz', connect:'Konektatu', connecting:'Konektatzen...', new:'Konexio berria', error:'Sartu IP eta erabiltzailea.', saved:'Konexioa gordeta.', save:'Gorde', save2:'Konexio hau gorde', del:'Ezabatu', delconfirm:'Konexio hau ezabatu?', stop:'Itzali', restart:'Berrabiarazi', shutdownconfirm:'Makina itzali?', rebootconfirm:'Makina berrabiarazi?' }
+  fr: { recent:'Connexions recentes', or:'ou nouvelle connexion', ip:'Adresse IP / DNS', port:'Port', user:'Utilisateur', pass:'Mot de passe', proto:'Protocole', res:'Resolution', multimon:'Multi-ecrans', connect:'Connexion', connecting:'Connexion...', new:'Nouvelle connexion', error:'Veuillez renseigner IP / DNS et utilisateur.', saved:'Connexion sauvegardee.', save:'Sauvegarder', save2:'Sauvegarder cette connexion', del:'Supprimer', delconfirm:'Supprimer cette connexion ?', stop:'Arret', restart:'Redemarrer', shutdownconfirm:'Eteindre la machine ?', rebootconfirm:'Redemarrer la machine ?' },
+  en: { recent:'Recent connections', or:'or new connection', ip:'IP Address / DNS', port:'Port', user:'Username', pass:'Password', proto:'Protocol', res:'Resolution', multimon:'Multi-screen', connect:'Connect', connecting:'Connecting...', new:'New connection', error:'Please enter IP / DNS and username.', saved:'Connection saved.', save:'Save', save2:'Save this connection', del:'Delete', delconfirm:'Delete this connection?', stop:'Shutdown', restart:'Restart', shutdownconfirm:'Shut down the machine?', rebootconfirm:'Restart the machine?' },
+  es: { recent:'Conexiones recientes', or:'o nueva conexion', ip:'IP / DNS', port:'Puerto', user:'Usuario', pass:'Contrasena', proto:'Protocolo', res:'Resolucion', multimon:'Multi-pantalla', connect:'Conectar', connecting:'Conectando...', new:'Nueva conexion', error:'Introduce IP / DNS y usuario.', saved:'Conexion guardada.', save:'Guardar', save2:'Guardar esta conexion', del:'Eliminar', delconfirm:'Eliminar esta conexion?', stop:'Apagar', restart:'Reiniciar', shutdownconfirm:'Apagar la maquina?', rebootconfirm:'Reiniciar la maquina?' },
+  eu: { recent:'Azken konexioak', or:'edo konexio berria', ip:'IP / DNS helbidea', port:'Portua', user:'Erabiltzailea', pass:'Pasahitza', proto:'Protokoloa', res:'Bereizmena', multimon:'Pantaila anitz', connect:'Konektatu', connecting:'Konektatzen...', new:'Konexio berria', error:'Sartu IP / DNS eta erabiltzailea.', saved:'Konexioa gordeta.', save:'Gorde', save2:'Konexio hau gorde', del:'Ezabatu', delconfirm:'Konexio hau ezabatu?', stop:'Itzali', restart:'Berrabiarazi', shutdownconfirm:'Makina itzali?', rebootconfirm:'Makina berrabiarazi?' }
 };
 let lang = 'fr';
 function setLang(l) {
@@ -467,4 +458,4 @@ renderSaved();
 onProtocolChange();
 </script>
 </body>
-</html>       
+</html>
