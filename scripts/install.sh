@@ -36,6 +36,8 @@ apt-get install -y \
     unclutter \
     x11-xserver-utils \
     fonts-dejavu \
+    plymouth \
+    plymouth-themes \
     curl
 info "Paquets installes"
 
@@ -56,7 +58,7 @@ cat > /root/.config/openbox/autostart << 'AUTOSTART'
 xset s off
 xset s noblank
 xset -dpms
-xsetroot -solid "#0d2233"
+xsetroot -solid "#eef2f7"
 sleep 2
 bash /opt/urrunberri-os/scripts/boot.sh
 AUTOSTART
@@ -90,6 +92,11 @@ XORG
 sed -i 's/#PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
 grep -q "PermitRootLogin yes" /etc/ssh/sshd_config || echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
 
+# ── CHROMIUM NO SANDBOX WARNING ───────────────────────────────────────────────
+mkdir -p /etc/chromium.d
+echo 'export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --no-sandbox"' > /etc/chromium.d/no-sandbox
+info "Chromium no-sandbox configure"
+
 # ── DOWNLOAD APP FILES ────────────────────────────────────────────────────────
 info "Telechargement des fichiers depuis GitHub..."
 curl -fsSL "$GITHUB_RAW/scripts/boot.sh" -o "$INSTALL_DIR/scripts/boot.sh"
@@ -100,6 +107,22 @@ curl -fsSL "$GITHUB_RAW/client-ui/splash/urrunberri.png" -o "$INSTALL_DIR/splash
 chmod +x "$INSTALL_DIR/scripts/boot.sh"
 chmod +x "$INSTALL_DIR/scripts/urrunberri_server.py"
 info "Fichiers telecharges"
+
+# ── PLYMOUTH THEME ────────────────────────────────────────────────────────────
+info "Installation du theme Plymouth..."
+mkdir -p /usr/share/plymouth/themes/urrunberri
+curl -fsSL "$GITHUB_RAW/plymouth/urrunberri.plymouth" -o /usr/share/plymouth/themes/urrunberri/urrunberri.plymouth 2>/dev/null || true
+curl -fsSL "$GITHUB_RAW/plymouth/urrunberri.script" -o /usr/share/plymouth/themes/urrunberri/urrunberri.script 2>/dev/null || true
+cp "$INSTALL_DIR/splash/urrunberri.png" /usr/share/plymouth/themes/urrunberri/urrunberri.png 2>/dev/null || true
+plymouth-set-default-theme urrunberri 2>/dev/null || true
+update-initramfs -u 2>/dev/null || true
+info "Theme Plymouth installe"
+
+# ── GRUB SILENT BOOT ──────────────────────────────────────────────────────────
+sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT=.*/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash loglevel=0 systemd.show_status=0"/' /etc/default/grub
+sed -i 's/GRUB_TIMEOUT=.*/GRUB_TIMEOUT=0/' /etc/default/grub
+update-grub 2>/dev/null || true
+info "GRUB demarrage silencieux configure"
 
 # ── ENABLE SERVICES ───────────────────────────────────────────────────────────
 systemctl enable lightdm
