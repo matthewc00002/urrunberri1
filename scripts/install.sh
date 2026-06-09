@@ -102,6 +102,7 @@ info "Telechargement des fichiers depuis GitHub..."
 curl -fsSL "$GITHUB_RAW/scripts/boot.sh" -o "$INSTALL_DIR/scripts/boot.sh"
 curl -fsSL "$GITHUB_RAW/scripts/urrunberri_server.py" -o "$INSTALL_DIR/scripts/urrunberri_server.py"
 curl -fsSL "$GITHUB_RAW/client-ui/splash/login.html" -o "$INSTALL_DIR/splash/login.html"
+curl -fsSL "$GITHUB_RAW/client-ui/splash/logo.png" -o "$INSTALL_DIR/splash/logo.png" 2>/dev/null || true
 curl -fsSL "$GITHUB_RAW/client-ui/splash/urrunberri.png" -o "$INSTALL_DIR/splash/urrunberri.png" 2>/dev/null || true
 
 chmod +x "$INSTALL_DIR/scripts/boot.sh"
@@ -113,7 +114,7 @@ info "Installation du theme Plymouth..."
 mkdir -p /usr/share/plymouth/themes/urrunberri
 curl -fsSL "$GITHUB_RAW/plymouth/urrunberri.plymouth" -o /usr/share/plymouth/themes/urrunberri/urrunberri.plymouth 2>/dev/null || true
 curl -fsSL "$GITHUB_RAW/plymouth/urrunberri.script" -o /usr/share/plymouth/themes/urrunberri/urrunberri.script 2>/dev/null || true
-cp "$INSTALL_DIR/splash/urrunberri.png" /usr/share/plymouth/themes/urrunberri/urrunberri.png 2>/dev/null || true
+curl -fsSL "$GITHUB_RAW/client-ui/splash/logo.png" -o /usr/share/plymouth/themes/urrunberri/logo.png 2>/dev/null || true
 plymouth-set-default-theme urrunberri 2>/dev/null || true
 update-initramfs -u 2>/dev/null || true
 info "Theme Plymouth installe"
