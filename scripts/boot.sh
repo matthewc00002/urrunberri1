@@ -28,7 +28,7 @@ pkill zenity 2>/dev/null || true
 sleep 1
 
 xhost + 2>/dev/null || true
-xsetroot -solid "#0d2233" 2>/dev/null || true
+xsetroot -solid "#eef2f7" 2>/dev/null || true
 mkdir -p /etc/urrunberri-os
 touch "$SAVED_FILE" 2>/dev/null || true
 
@@ -84,11 +84,9 @@ show_login() {
     POS_X=$(( (SCR_W - WIN_W) / 2 ))
     POS_Y=$(( (SCR_H - WIN_H) / 2 ))
 
-    xsetroot -solid "#0d2233" 2>/dev/null || true
+    xsetroot -solid "#eef2f7" 2>/dev/null || true
 
     chromium \
-        --no-sandbox \
-        --disable-gpu \
         --app="http://127.0.0.1:7070/splash/login.html" \
         --window-size=${WIN_W},${WIN_H} \
         --window-position=${POS_X},${POS_Y} \
@@ -125,7 +123,7 @@ show_login() {
     [[ "$ACTION" == "close" ]] && { kill $SERVER_PID 2>/dev/null; exit 0; }
 
     if [[ "$ACTION" == "terminal" ]]; then
-        xterm -bg "#0d2233" -fg "#e0f0f8" -fa "Monospace" -fs 12 \
+        xterm -bg "#eef2f7" -fg "#1a2744" -fa "Monospace" -fs 12 \
             -title "UrrunBerri OS — Terminal" 2>/dev/null &
         return 1
     fi
@@ -179,7 +177,7 @@ show_disconnect_btn() {
 
 # ── MAIN LOOP ─────────────────────────────────────────────────────────────────
 while true; do
-    xsetroot -solid "#0d2233" 2>/dev/null || true
+    xsetroot -solid "#eef2f7" 2>/dev/null || true
 
     if ! show_login; then
         sleep 1
@@ -212,7 +210,7 @@ while true; do
             RDP_PID=$!
             ;;
         ssh)
-            xterm -fullscreen -bg "#0d2233" -fg "#e0f0f8" \
+            xterm -fullscreen -bg "#eef2f7" -fg "#1a2744" \
                 -fa "Monospace" -fs 12 \
                 -title "SSH — ${CONN_HOST}" \
                 -e "ssh ${USERNAME}@${CONN_HOST} -p ${CONN_PORT}" 2>/dev/null &
