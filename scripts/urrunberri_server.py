@@ -175,9 +175,10 @@ class UrrunBerriHandler(http.server.BaseHTTPRequestHandler):
                 self.wfile.write(str(e).encode())
             return
 
-        if path == '/splash/urrunberri.png':
+        if path in ('/splash/urrunberri.png', '/splash/logo.png'):
             try:
-                with open(f"{SPLASH_DIR}/urrunberri.png", 'rb') as f:
+                img_file = 'logo.png' if path == '/splash/logo.png' else 'urrunberri.png'
+                with open(f"{SPLASH_DIR}/{img_file}", 'rb') as f:
                     data = f.read()
                 mime = 'image/jpeg' if data[:2] == b'\xff\xd8' else 'image/png'
                 self.send_response(200)
