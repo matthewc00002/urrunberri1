@@ -140,6 +140,7 @@ show_login() {
         PROTOCOL=$(echo "$data"  | cut -d'|' -f7)
         RES=$(echo "$data"       | cut -d'|' -f8)
         MULTIMON=$(echo "$data"  | cut -d'|' -f9)
+        USB=$(echo "$data"       | cut -d'|' -f10)
 
         [[ -z "$CONN_HOST" || -z "$USERNAME" ]] && return 1
         [[ -z "$CONN_PORT" ]] && CONN_PORT=3389
@@ -192,6 +193,19 @@ while true; do
     [[ -n "$DOMAIN" ]] && DOMAIN_ARG="/d:${DOMAIN}"
     MULTIMON_ARG=""
     [[ "$MULTIMON" == "1" ]] && MULTIMON_ARG="/multimon"
+    USB_ARG=""
+    if [[ "$USB" == "1" ]]; then
+        USB_PARENT=$(lsblk -o NAME,TRAN -rn | grep usb | awk '{print $1}' | head -1)
+        USB_DEV=$(lsblk -o NAME,FSTYPE -rn | grep "^${USB_PARENT}" | grep -v "^${USB_PARENT} " | awk '$2!=""' | head -1 | awk '{print $1}')
+        if [[ -n "$USB_DEV" ]]; then
+            mkdir -p /tmp/usb-share
+            umount /tmp/usb-share 2>/dev/null || true
+            mount /dev/$USB_DEV /tmp/usb-share 2>/dev/null && USB_ARG="/drive:USB,/tmp/usb-share"
+            echo "[UrrunBerri OS] USB monte: /dev/$USB_DEV → /tmp/usb-share"
+        else
+            echo "[UrrunBerri OS] Aucun peripherique USB detecte"
+        fi
+    fi
 
     case "$PROTOCOL" in
         rdp)
@@ -204,6 +218,7 @@ while true; do
                 /cert:ignore \
                 /clipboard /fonts \
                 ${MULTIMON_ARG} \
+                ${USB_ARG} \
                 /log-level:ERROR &
             RDP_PID=$!
             ;;
@@ -226,5 +241,6 @@ while true; do
     kill $DISCONNECT_PID 2>/dev/null || true
     RDP_PID=""
     echo "[UrrunBerri OS] Deconnecte."
+    umount /tmp/usb-share 2>/dev/null || true
     sleep 2
 done
