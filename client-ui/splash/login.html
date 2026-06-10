@@ -213,7 +213,7 @@ input:focus { border-color: #2352be; background: #fff; }
 <body>
 <div class="card">
   <div class="logo-wrap">
-    <img src="http://127.0.0.1:7070/splash/urrunberri.png" alt="UrrunBerri OS" />
+    <img src="http://127.0.0.1:7070/splash/logo.png" alt="UrrunBerri OS" />
   </div>
   <div class="saved-wrap" id="saved-wrap" style="display:none">
     <div class="section-label" id="lbl-recent">Connexions recentes</div>
@@ -276,6 +276,10 @@ input:focus { border-color: #2352be; background: #fff; }
       <input type="checkbox" id="multimon" />
       <label for="multimon" id="lbl-multimon">Multi-ecrans</label>
     </div>
+    <div class="check-row" id="usb-row">
+      <input type="checkbox" id="usb" />
+      <label for="usb" id="lbl-usb">USB</label>
+    </div>
   </div>
   <div class="btn-row">
     <button class="btn-connect" id="btn-connect" onclick="connect()">
@@ -290,14 +294,14 @@ input:focus { border-color: #2352be; background: #fff; }
     <button class="lang-btn" onclick="setLang('es')">ES</button>
     <button class="lang-btn" onclick="setLang('eu')">EU</button>
   </div>
-  <div class="version">UrrunBerri OS v4.0 — Openema SARL</div>
+  <div class="version">UrrunBerri OS v5.0 — Openema SARL</div>
 </div>
 <script>
 const i18n = {
-  fr: { recent:'Connexions recentes', or:'ou nouvelle connexion', ip:'Adresse IP / DNS', port:'Port', user:'Utilisateur', pass:'Mot de passe', proto:'Protocole', res:'Resolution', multimon:'Multi-ecrans', connect:'Connexion', connecting:'Connexion...', new:'Nouvelle connexion', error:'Veuillez renseigner IP / DNS et utilisateur.', saved:'Connexion sauvegardee.', save:'Sauvegarder', save2:'Sauvegarder cette connexion', del:'Supprimer', delconfirm:'Supprimer cette connexion ?', stop:'Arret', restart:'Redemarrer', shutdownconfirm:'Eteindre la machine ?', rebootconfirm:'Redemarrer la machine ?' },
-  en: { recent:'Recent connections', or:'or new connection', ip:'IP Address / DNS', port:'Port', user:'Username', pass:'Password', proto:'Protocol', res:'Resolution', multimon:'Multi-screen', connect:'Connect', connecting:'Connecting...', new:'New connection', error:'Please enter IP / DNS and username.', saved:'Connection saved.', save:'Save', save2:'Save this connection', del:'Delete', delconfirm:'Delete this connection?', stop:'Shutdown', restart:'Restart', shutdownconfirm:'Shut down the machine?', rebootconfirm:'Restart the machine?' },
-  es: { recent:'Conexiones recientes', or:'o nueva conexion', ip:'IP / DNS', port:'Puerto', user:'Usuario', pass:'Contrasena', proto:'Protocolo', res:'Resolucion', multimon:'Multi-pantalla', connect:'Conectar', connecting:'Conectando...', new:'Nueva conexion', error:'Introduce IP / DNS y usuario.', saved:'Conexion guardada.', save:'Guardar', save2:'Guardar esta conexion', del:'Eliminar', delconfirm:'Eliminar esta conexion?', stop:'Apagar', restart:'Reiniciar', shutdownconfirm:'Apagar la maquina?', rebootconfirm:'Reiniciar la maquina?' },
-  eu: { recent:'Azken konexioak', or:'edo konexio berria', ip:'IP / DNS helbidea', port:'Portua', user:'Erabiltzailea', pass:'Pasahitza', proto:'Protokoloa', res:'Bereizmena', multimon:'Pantaila anitz', connect:'Konektatu', connecting:'Konektatzen...', new:'Konexio berria', error:'Sartu IP / DNS eta erabiltzailea.', saved:'Konexioa gordeta.', save:'Gorde', save2:'Konexio hau gorde', del:'Ezabatu', delconfirm:'Konexio hau ezabatu?', stop:'Itzali', restart:'Berrabiarazi', shutdownconfirm:'Makina itzali?', rebootconfirm:'Makina berrabiarazi?' }
+  fr: { recent:'Connexions recentes', or:'ou nouvelle connexion', ip:'Adresse IP / DNS', port:'Port', user:'Utilisateur', pass:'Mot de passe', proto:'Protocole', res:'Resolution', multimon:'Multi-ecrans', usb:'USB', connect:'Connexion', connecting:'Connexion...', new:'Nouvelle connexion', error:'Veuillez renseigner IP / DNS et utilisateur.', saved:'Connexion sauvegardee.', save:'Sauvegarder', save2:'Sauvegarder cette connexion', del:'Supprimer', delconfirm:'Supprimer cette connexion ?', stop:'Arret', restart:'Redemarrer', shutdownconfirm:'Eteindre la machine ?', rebootconfirm:'Redemarrer la machine ?' },
+  en: { recent:'Recent connections', or:'or new connection', ip:'IP Address / DNS', port:'Port', user:'Username', pass:'Password', proto:'Protocol', res:'Resolution', multimon:'Multi-screen', usb:'USB', connect:'Connect', connecting:'Connecting...', new:'New connection', error:'Please enter IP / DNS and username.', saved:'Connection saved.', save:'Save', save2:'Save this connection', del:'Delete', delconfirm:'Delete this connection?', stop:'Shutdown', restart:'Restart', shutdownconfirm:'Shut down the machine?', rebootconfirm:'Restart the machine?' },
+  es: { recent:'Conexiones recientes', or:'o nueva conexion', ip:'IP / DNS', port:'Puerto', user:'Usuario', pass:'Contrasena', proto:'Protocolo', res:'Resolucion', multimon:'Multi-pantalla', usb:'USB', connect:'Conectar', connecting:'Conectando...', new:'Nueva conexion', error:'Introduce IP / DNS y usuario.', saved:'Conexion guardada.', save:'Guardar', save2:'Guardar esta conexion', del:'Eliminar', delconfirm:'Eliminar esta conexion?', stop:'Apagar', restart:'Reiniciar', shutdownconfirm:'Apagar la maquina?', rebootconfirm:'Reiniciar la maquina?' },
+  eu: { recent:'Azken konexioak', or:'edo konexio berria', ip:'IP / DNS helbidea', port:'Portua', user:'Erabiltzailea', pass:'Pasahitza', proto:'Protokoloa', res:'Bereizmena', multimon:'Pantaila anitz', usb:'USB', connect:'Konektatu', connecting:'Konektatzen...', new:'Konexio berria', error:'Sartu IP / DNS eta erabiltzailea.', saved:'Konexioa gordeta.', save:'Gorde', save2:'Konexio hau gorde', del:'Ezabatu', delconfirm:'Konexio hau ezabatu?', stop:'Itzali', restart:'Berrabiarazi', shutdownconfirm:'Makina itzali?', rebootconfirm:'Makina berrabiarazi?' }
 };
 let lang = 'fr';
 function setLang(l) {
@@ -315,6 +319,7 @@ function setLang(l) {
   document.getElementById('lbl-proto').textContent = t.proto;
   document.getElementById('lbl-res').textContent = t.res;
   document.getElementById('lbl-multimon').textContent = t.multimon;
+  document.getElementById('lbl-usb').textContent = t.usb;
   document.getElementById('btn-text').textContent = t.connect;
   document.getElementById('error-msg').textContent = t.error;
   document.getElementById('btn-save').textContent = t.save;
@@ -332,6 +337,7 @@ function onProtocolChange() {
   const rdpOnly = proto === 'rdp';
   document.getElementById('resolution').parentElement.style.opacity = rdpOnly ? '1' : '0.35';
   document.getElementById('multimon-row').style.opacity = rdpOnly ? '1' : '0.35';
+  document.getElementById('usb-row').style.opacity = rdpOnly ? '1' : '0.35';
 }
 let savedConnections = __SAVED_CONNECTIONS__;
 if (!Array.isArray(savedConnections)) savedConnections = [];
@@ -372,6 +378,7 @@ function onSavedSelect() {
     document.getElementById('protocol').value = 'rdp';
     document.getElementById('resolution').value = 'auto';
     document.getElementById('multimon').checked = false;
+    document.getElementById('usb').checked = false;
     document.getElementById('ip').focus();
   } else {
     const c = savedConnections[parseInt(val)];
@@ -437,12 +444,13 @@ function connect() {
   const protocol = document.getElementById('protocol').value;
   const res = document.getElementById('resolution').value;
   const multimon = document.getElementById('multimon').checked ? '1' : '0';
+  const usb = document.getElementById('usb').checked ? '1' : '0';
   if (!ip || !user) { document.getElementById('error-msg').style.display='block'; return; }
   document.getElementById('error-msg').style.display='none';
   const btn = document.getElementById('btn-connect');
   btn.classList.add('loading');
   document.getElementById('btn-text').textContent = i18n[lang].connecting;
-  const result = ip+'|'+port+'|'+user+'|'+pass+'|||'+protocol+'|'+res+'|'+multimon;
+  const result = ip+'|'+port+'|'+user+'|'+pass+'|||'+protocol+'|'+res+'|'+multimon+'|'+usb;
   fetch('http://127.0.0.1:7070/connect?data='+encodeURIComponent(result)).catch(()=>{});
 }
 function shutdown() {
