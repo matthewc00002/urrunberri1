@@ -95,7 +95,8 @@ grep -q "PermitRootLogin yes" /etc/ssh/sshd_config || echo "PermitRootLogin yes"
 # ── CHROMIUM NO SANDBOX WARNING ───────────────────────────────────────────────
 mkdir -p /etc/chromium.d
 echo 'export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --no-sandbox"' > /etc/chromium.d/no-sandbox
-info "Chromium no-sandbox configure"
+rm -rf /root/.config/chromium 2>/dev/null || true
+info "Chromium no-sandbox configure — cache efface"
 
 # ── DOWNLOAD APP FILES ────────────────────────────────────────────────────────
 info "Telechargement des fichiers depuis GitHub..."
