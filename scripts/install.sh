@@ -25,7 +25,7 @@ apt-get install -y \
     openbox \
     lightdm \
     lightdm-gtk-greeter \
-    chromium \
+    firefox-esr \
     xterm \
     zenity \
     python3 \
@@ -91,12 +91,6 @@ XORG
 # ── SSH ROOT LOGIN ────────────────────────────────────────────────────────────
 sed -i 's/#PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
 grep -q "PermitRootLogin yes" /etc/ssh/sshd_config || echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
-
-# ── CHROMIUM NO SANDBOX WARNING ───────────────────────────────────────────────
-mkdir -p /etc/chromium.d
-echo 'export CHROMIUM_FLAGS="$CHROMIUM_FLAGS --no-sandbox"' > /etc/chromium.d/no-sandbox
-rm -rf /root/.config/chromium 2>/dev/null || true
-info "Chromium no-sandbox configure — cache efface"
 
 # ── DOWNLOAD APP FILES ────────────────────────────────────────────────────────
 info "Telechargement des fichiers depuis GitHub..."
