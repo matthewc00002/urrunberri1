@@ -20,10 +20,11 @@ ACTION_FILE="/tmp/urrunberri_action.txt"
 RESULT_FILE="/tmp/urrunberri_login.txt"
 RDP_PID=""
 SERVER_PID=""
+FIREFOX_PID=""
 
 # ── INIT ──────────────────────────────────────────────────────────────────────
 pkill -f urrunberri_server.py 2>/dev/null || true
-pkill chromium 2>/dev/null || true
+pkill firefox-esr 2>/dev/null || true
 pkill zenity 2>/dev/null || true
 sleep 1
 
@@ -63,7 +64,7 @@ ensure_server() {
 wait_for_action() {
     rm -f "$ACTION_FILE" "$RESULT_FILE"
     while true; do
-        if ! kill -0 "$CHROMIUM_PID" 2>/dev/null; then
+        if ! kill -0 "$FIREFOX_PID" 2>/dev/null; then
             return 2
         fi
         sleep 0.3
@@ -86,24 +87,23 @@ show_login() {
 
     xsetroot -solid "#eef2f7" 2>/dev/null || true
 
-    chromium \
-        --no-sandbox \
-        --disable-gpu \
-        --app="http://127.0.0.1:7070/splash/login.html" \
-        --window-size=${WIN_W},${WIN_H} \
-        --window-position=${POS_X},${POS_Y} \
+    firefox-esr \
+        --kiosk \
+        --width=${WIN_W} \
+        --height=${WIN_H} \
+        "http://127.0.0.1:7070/splash/login.html" \
         2>/dev/null &
-    CHROMIUM_PID=$!
+    FIREFOX_PID=$!
 
     wait_for_action
     local wait_ret=$?
 
     if [[ $wait_ret -eq 2 ]]; then
-        echo "[UrrunBerri OS] Chromium mort — redemarrage..."
+        echo "[UrrunBerri OS] Firefox mort — redemarrage..."
         return 1
     fi
 
-    kill $CHROMIUM_PID 2>/dev/null || true
+    kill $FIREFOX_PID 2>/dev/null || true
     sleep 0.5
 
     ACTION=$(cat "$ACTION_FILE" 2>/dev/null)
