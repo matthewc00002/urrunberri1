@@ -58,6 +58,7 @@ cat > /root/.config/openbox/autostart << 'AUTOSTART'
 xset s off
 xset s noblank
 xset -dpms
+xset r off
 xsetroot -solid "#eef2f7"
 sleep 2
 bash /opt/urrunberri-os/scripts/boot.sh
