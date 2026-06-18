@@ -14,9 +14,22 @@ import os
 
 SAVED_FILE = "/etc/urrunberri-os/saved_connections.csv"
 SPLASH_DIR = "/opt/urrunberri-os/splash"
+VERSION_FILE = "/etc/urrunberri-os/version"
 ACTION_FILE = "/tmp/urrunberri_action.txt"
 RESULT_FILE = "/tmp/urrunberri_login.txt"
 PORT = 7070
+
+def get_version():
+    try:
+        with open(VERSION_FILE, 'r') as f:
+            for line in f:
+                if line.startswith('version='):
+                    return line.split('=', 1)[1].strip()
+        # fallback: first line
+        with open(VERSION_FILE, 'r') as f:
+            return f.readline().strip() or "?"
+    except:
+        return "?"
 
 def write_action(action, data=""):
     with open(ACTION_FILE, 'w') as f:
@@ -162,6 +175,7 @@ class UrrunBerriHandler(http.server.BaseHTTPRequestHandler):
                 with open(f"{SPLASH_DIR}/login.html", 'r') as f:
                     html = f.read()
                 html = html.replace('__SAVED_CONNECTIONS__', conns_json)
+                html = html.replace('__VERSION__', get_version())
                 encoded = html.encode('utf-8')
                 self.send_response(200)
                 self.send_header('Content-Type', 'text/html; charset=utf-8')
@@ -189,6 +203,10 @@ class UrrunBerriHandler(http.server.BaseHTTPRequestHandler):
             except:
                 self.send_response(404)
                 self.end_headers()
+            return
+
+        if path == '/version':
+            self.send_cors(get_version())
             return
 
         if path == '/test':
