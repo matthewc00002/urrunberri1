@@ -51,6 +51,26 @@ mkdir -p "$INSTALL_DIR/splash"
 mkdir -p /etc/urrunberri-os
 touch /etc/urrunberri-os/saved_connections.csv
 
+# ── FIREFOX POLICY (desactive gestionnaire de mots de passe) ──────────────────
+mkdir -p /etc/firefox-esr/policies
+cat > /etc/firefox-esr/policies/policies.json << 'POLICY'
+{
+  "policies": {
+    "PasswordManagerEnabled": false,
+    "OfferToSaveLogins": false,
+    "DisableFirefoxAccounts": true,
+    "Preferences": {
+      "signon.rememberSignons": { "Value": false, "Status": "locked" },
+      "signon.generation.enabled": { "Value": false, "Status": "locked" },
+      "signon.autofillForms": { "Value": false, "Status": "locked" }
+    }
+  }
+}
+POLICY
+mkdir -p /usr/lib/firefox-esr/distribution
+cp /etc/firefox-esr/policies/policies.json /usr/lib/firefox-esr/distribution/policies.json 2>/dev/null || true
+info "Politique Firefox configuree (mots de passe desactives)"
+
 # ── OPENBOX FOR ROOT ──────────────────────────────────────────────────────────
 mkdir -p /root/.config/openbox
 cat > /root/.config/openbox/autostart << 'AUTOSTART'
@@ -58,7 +78,6 @@ cat > /root/.config/openbox/autostart << 'AUTOSTART'
 xset s off
 xset s noblank
 xset -dpms
-xset r off
 xsetroot -solid "#eef2f7"
 sleep 2
 bash /opt/urrunberri-os/scripts/boot.sh
