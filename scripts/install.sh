@@ -51,6 +51,17 @@ mkdir -p "$INSTALL_DIR/splash"
 mkdir -p /etc/urrunberri-os
 touch /etc/urrunberri-os/saved_connections.csv
 
+# ── VERSION FILE ──────────────────────────────────────────────────────────────
+info "Enregistrement de la version..."
+APP_VERSION=$(curl -fsSL "$GITHUB_RAW/VERSION" 2>/dev/null | head -1 | tr -d '[:space:]')
+[[ -z "$APP_VERSION" ]] && APP_VERSION="?"
+INSTALL_DATE=$(date '+%Y-%m-%d %H:%M:%S')
+cat > /etc/urrunberri-os/version << VERSIONEOF
+version=$APP_VERSION
+date_installation=$INSTALL_DATE
+VERSIONEOF
+info "Version installee : $APP_VERSION ($INSTALL_DATE)"
+
 # ── FIREFOX POLICY (desactive gestionnaire de mots de passe) ──────────────────
 mkdir -p /etc/firefox-esr/policies
 cat > /etc/firefox-esr/policies/policies.json << 'POLICY'
@@ -149,6 +160,7 @@ systemctl start getty@tty2.service
 systemctl daemon-reload
 
 info "=== Installation terminee ==="
+info "Version : $APP_VERSION"
 info "Redemarrez avec : reboot"
 info "SSH root : ssh root@IP (PermitRootLogin active)"
-info "Ctrl+Alt+F2 : terminal TTY2 disponible"
+info "Verifier la version : cat /etc/urrunberri-os/version"
