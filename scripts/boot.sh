@@ -216,7 +216,7 @@ while true; do
                 ${DOMAIN_ARG} \
                 /size:${RESOLUTION} \
                 /cert:ignore \
-                /clipboard /fonts \
+                /clipboard /fonts /kbd:layout:0x040C \
                 ${MULTIMON_ARG} \
                 ${USB_ARG} \
                 /log-level:ERROR &
