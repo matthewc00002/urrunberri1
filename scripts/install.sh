@@ -33,7 +33,6 @@ apt-get install -y \
     tigervnc-viewer \
     openssh-server \
     netcat-openbsd \
-    unclutter \
     x11-xserver-utils \
     fonts-dejavu \
     plymouth \
