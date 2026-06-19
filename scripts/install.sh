@@ -40,6 +40,11 @@ apt-get install -y \
     curl
 info "Paquets installes"
 
+# ── SUPPRESSION UNCLUTTER (masquait le curseur souris) ────────────────────────
+apt-get remove -y unclutter 2>/dev/null || true
+pkill unclutter 2>/dev/null || true
+info "Unclutter supprime (curseur souris toujours visible)"
+
 # ── XFREERDP3 SYMLINK ─────────────────────────────────────────────────────────
 ln -sf /usr/bin/xfreerdp3 /usr/local/bin/xfreerdp 2>/dev/null || true
 info "xfreerdp → xfreerdp3"
