@@ -10,6 +10,7 @@ CONFIG="/etc/urrunberri-os/config.conf"
 [[ -f "$CONFIG" ]] && source "$CONFIG"
 
 RESOLUTION="${RESOLUTION:-1920x1080}"
+KBD_LAYOUT="${KBD_LAYOUT:-0x040C}"
 DISPLAY=":0"
 XAUTHORITY="/var/run/lightdm/root/:0"
 export DISPLAY XAUTHORITY
@@ -30,6 +31,7 @@ sleep 1
 
 xhost + 2>/dev/null || true
 xsetroot -solid "#eef2f7" 2>/dev/null || true
+xset -led named "Scroll Lock" 2>/dev/null || true
 mkdir -p /etc/urrunberri-os
 touch "$SAVED_FILE" 2>/dev/null || true
 
@@ -181,6 +183,7 @@ show_disconnect_btn() {
 # ── MAIN LOOP ─────────────────────────────────────────────────────────────────
 while true; do
     xsetroot -solid "#eef2f7" 2>/dev/null || true
+    xset -led named "Scroll Lock" 2>/dev/null || true
 
     if ! show_login; then
         sleep 1
@@ -216,7 +219,7 @@ while true; do
                 ${DOMAIN_ARG} \
                 /size:${RESOLUTION} \
                 /cert:ignore \
-                /clipboard /fonts /kbd:layout:0x040C \
+                /clipboard /fonts /kbd:layout:${KBD_LAYOUT} \
                 ${MULTIMON_ARG} \
                 ${USB_ARG} \
                 /log-level:ERROR &
