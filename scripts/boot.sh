@@ -17,15 +17,16 @@ export DISPLAY XAUTHORITY
 
 SAVED_FILE="/etc/urrunberri-os/saved_connections.csv"
 SERVER_SCRIPT="/opt/urrunberri-os/scripts/urrunberri_server.py"
+LAUNCHER_SCRIPT="/opt/urrunberri-os/scripts/urrunberri_launcher.py"
 ACTION_FILE="/tmp/urrunberri_action.txt"
 RESULT_FILE="/tmp/urrunberri_login.txt"
 RDP_PID=""
 SERVER_PID=""
-FIREFOX_PID=""
+LAUNCHER_PID=""
 
 # ── INIT ──────────────────────────────────────────────────────────────────────
 pkill -f urrunberri_server.py 2>/dev/null || true
-pkill firefox-esr 2>/dev/null || true
+pkill -f urrunberri_launcher.py 2>/dev/null || true
 pkill zenity 2>/dev/null || true
 sleep 1
 
@@ -50,6 +51,7 @@ echo "[UrrunBerri OS] xfreerdp: $XFREERDP_BIN"
 python3 "$SERVER_SCRIPT" &
 SERVER_PID=$!
 sleep 1
+echo "[UrrunBerri OS] API server running on port 7070"
 echo "[UrrunBerri OS] Serveur Python PID: $SERVER_PID"
 
 # ── ENSURE SERVER IS RUNNING ──────────────────────────────────────────────────
@@ -66,7 +68,7 @@ ensure_server() {
 wait_for_action() {
     rm -f "$ACTION_FILE" "$RESULT_FILE"
     while true; do
-        if ! kill -0 "$FIREFOX_PID" 2>/dev/null; then
+        if ! kill -0 "$LAUNCHER_PID" 2>/dev/null; then
             return 2
         fi
         sleep 0.3
@@ -83,29 +85,22 @@ show_login() {
 
     SCR_W=${RESOLUTION%%x*}
     SCR_H=${RESOLUTION##*x}
-    WIN_W=520; WIN_H=820
-    POS_X=$(( (SCR_W - WIN_W) / 2 ))
-    POS_Y=$(( (SCR_H - WIN_H) / 2 ))
 
     xsetroot -solid "#eef2f7" 2>/dev/null || true
 
-    firefox-esr \
-        --kiosk \
-        --width=${WIN_W} \
-        --height=${WIN_H} \
-        "http://127.0.0.1:7070/splash/login.html" \
-        2>/dev/null &
-    FIREFOX_PID=$!
+    python3 "$LAUNCHER_SCRIPT" 2>/dev/null &
+    LAUNCHER_PID=$!
+    echo "[UrrunBerri OS] Lanceur GTK PID: $LAUNCHER_PID"
 
     wait_for_action
     local wait_ret=$?
 
     if [[ $wait_ret -eq 2 ]]; then
-        echo "[UrrunBerri OS] Firefox mort — redemarrage..."
+        echo "[UrrunBerri OS] Lanceur mort — redemarrage..."
         return 1
     fi
 
-    kill $FIREFOX_PID 2>/dev/null || true
+    kill $LAUNCHER_PID 2>/dev/null || true
     sleep 0.5
 
     ACTION=$(cat "$ACTION_FILE" 2>/dev/null)
