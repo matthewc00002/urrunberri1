@@ -1,9 +1,11 @@
 #!/bin/bash
 # =============================================================================
-#  UrrunBerri OS — Boot Script
+#  UrrunBerri OS — Boot Script (Hardened)
 #  Debian 13 Trixie — Root user — xfreerdp3
 #  Author : Mathieu Cadi — Openema SARL
 #  GitHub : https://github.com/matthewc00002/urrunberri1
+#
+#  Security: All user-supplied variables are quoted to prevent shell injection.
 # =============================================================================
 
 CONFIG="/etc/urrunberri-os/config.conf"
@@ -77,6 +79,18 @@ wait_for_action() {
     return 0
 }
 
+# ── INPUT VALIDATION ──────────────────────────────────────────────────────────
+validate_host() {
+    # Only allow alphanumeric, dots, hyphens, colons (IPv6)
+    [[ "$1" =~ ^[a-zA-Z0-9.:-]+$ ]] && return 0
+    return 1
+}
+
+validate_port() {
+    [[ "$1" =~ ^[0-9]+$ ]] && (( $1 >= 1 && $1 <= 65535 )) && return 0
+    return 1
+}
+
 # ── SHOW LOGIN PAGE ───────────────────────────────────────────────────────────
 show_login() {
     rm -f "$ACTION_FILE" "$RESULT_FILE"
@@ -139,9 +153,27 @@ show_login() {
         MULTIMON=$(echo "$data"  | cut -d'|' -f9)
         USB=$(echo "$data"       | cut -d'|' -f10)
 
+        # SECURITY: Validate host and port
+        if ! validate_host "$CONN_HOST"; then
+            echo "[UrrunBerri OS] SECURITE: adresse invalide rejetee: $CONN_HOST"
+            return 1
+        fi
+
         [[ -z "$CONN_HOST" || -z "$USERNAME" ]] && return 1
         [[ -z "$CONN_PORT" ]] && CONN_PORT=3389
+
+        if ! validate_port "$CONN_PORT"; then
+            echo "[UrrunBerri OS] SECURITE: port invalide rejete: $CONN_PORT"
+            CONN_PORT=3389
+        fi
+
         [[ -z "$PROTOCOL" ]] && PROTOCOL=rdp
+        # SECURITY: Only allow known protocols
+        case "$PROTOCOL" in
+            rdp|vnc|ssh) ;;
+            *) echo "[UrrunBerri OS] SECURITE: protocole invalide: $PROTOCOL"; return 1 ;;
+        esac
+
         [[ -n "$RES" && "$RES" != "undefined" && "$RES" != "auto" ]] && RESOLUTION="$RES"
 
         if [[ "$RES" == "auto" ]]; then
@@ -207,14 +239,14 @@ while true; do
 
     case "$PROTOCOL" in
         rdp)
-            $XFREERDP_BIN \
-                /v:${CONN_HOST}:${CONN_PORT} \
-                /u:${USERNAME} \
-                /p:${PASSWORD} \
+            "$XFREERDP_BIN" \
+                "/v:${CONN_HOST}:${CONN_PORT}" \
+                "/u:${USERNAME}" \
+                "/p:${PASSWORD}" \
                 ${DOMAIN_ARG} \
-                /size:${RESOLUTION} \
+                "/size:${RESOLUTION}" \
                 /cert:ignore \
-                /clipboard /fonts /kbd:layout:${KBD_LAYOUT} \
+                /clipboard /fonts "/kbd:layout:${KBD_LAYOUT}" \
                 ${MULTIMON_ARG} \
                 ${USB_ARG} \
                 /log-level:ERROR &
@@ -228,7 +260,7 @@ while true; do
             xterm -fullscreen -bg "#eef2f7" -fg "#1a2744" \
                 -fa "Monospace" -fs 12 \
                 -title "SSH — ${CONN_HOST}" \
-                -e "ssh ${USERNAME}@${CONN_HOST} -p ${CONN_PORT}" 2>/dev/null &
+                -e "ssh '${USERNAME}'@'${CONN_HOST}' -p '${CONN_PORT}'" 2>/dev/null &
             RDP_PID=$!
             ;;
     esac
