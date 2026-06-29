@@ -28,19 +28,30 @@ sudo bash iso/build-offline-iso.sh
 
 ## Ce que l'ISO demande
 
-L'installeur ne pose que les questions essentielles :
+L'installeur pose les questions essentielles — aucune valeur par defaut n'est imposee :
 
-| Question | Defaut |
-|----------|--------|
-| Langue | (choix utilisateur) |
-| Hostname | (choix utilisateur) |
-| Adresse IP | (choix utilisateur) |
-| Masque | (choix utilisateur) |
-| Passerelle | (choix utilisateur) |
-| DNS | (choix utilisateur) |
-| Mot de passe root | (choix utilisateur) |
+| Question | Pre-rempli |
+|----------|-----------|
+| Langue | Non |
+| Hostname | Non |
+| Domaine | Non |
+| Adresse IP | Non |
+| Masque de sous-reseau | Non |
+| Passerelle | Non |
+| Serveur DNS | Non |
+| Mot de passe root | Non |
 
-Tout le reste (partitionnement, paquets, configuration) est automatique.
+Tout le reste est automatique : partitionnement (disque entier), paquets, configuration systeme, installation UrrunBerri OS.
+
+## Ce qui est automatise
+
+- Clavier AZERTY francais
+- Fuseau horaire Europe/Paris
+- Partitionnement automatique (disque entier)
+- Compte utilisateur matt (mot de passe: openema)
+- Installation de curl, ca-certificates, openssh-server, sudo
+- SSH avec PermitRootLogin active
+- Installation UrrunBerri OS au premier demarrage (Option 1) ou pendant l'install (Option 2)
 
 ## Graver sur USB
 
@@ -52,12 +63,13 @@ Remplacer `/dev/sdX` par le bon peripherique (verifier avec `lsblk`).
 
 ## Construction
 
-Les scripts de construction doivent etre executes sur une machine Debian (la machine dual-boot par exemple). Ils necessitent un acces root et environ 2 Go d'espace disque temporaire.
+Les scripts doivent etre executes en root sur une machine Debian.
+Espace disque temporaire necessaire : ~2 Go.
 
 ## Fichiers
 
 | Fichier | Description |
 |---------|-------------|
 | `iso/preseed.cfg` | Configuration preseed Debian |
-| `iso/build-netinst-iso.sh` | Script de construction Option 1 |
-| `iso/build-offline-iso.sh` | Script de construction Option 2 |
+| `iso/build-netinst-iso.sh` | Script de construction Option 1 (online) |
+| `iso/build-offline-iso.sh` | Script de construction Option 2 (offline) |
