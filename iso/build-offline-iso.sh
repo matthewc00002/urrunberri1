@@ -70,7 +70,7 @@ d-i keyboard-configuration/xkb-keymap select fr
 
 # ── NETWORK ───────────────────────────────────────────────────────────────────
 d-i netcfg/disable_autoconfig boolean true
-d-i netcfg/get_domain string openema.local
+# Network fields NOT preseeded — installer will ask
 
 # ── CLOCK & TIMEZONE ──────────────────────────────────────────────────────────
 d-i clock-setup/utc boolean true
