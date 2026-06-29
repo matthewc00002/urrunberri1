@@ -9,7 +9,7 @@
 
 set -e
 
-GITHUB_RAW="https://raw.githubusercontent.com/matthewc00002/urrunberri1/test"
+GITHUB_RAW="https://raw.githubusercontent.com/matthewc00002/urrunberri1/iso"
 INSTALL_DIR="/opt/urrunberri-os"
 
 info()  { echo "[UrrunBerri OS] $1"; }
@@ -67,7 +67,7 @@ INSTALL_DATE=$(date '+%Y-%m-%d %H:%M:%S')
 cat > /etc/urrunberri-os/version << VERSIONEOF
 version=$APP_VERSION
 date_installation=$INSTALL_DATE
-branche=test
+branche=iso
 VERSIONEOF
 info "Version installee : $APP_VERSION ($INSTALL_DATE) [branche test]"
 
