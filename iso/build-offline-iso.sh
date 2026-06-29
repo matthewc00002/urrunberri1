@@ -195,16 +195,17 @@ echo "[3/5] Construction de l'ISO (cette etape peut prendre 15-30 minutes)..."
 mkdir -p "$OUTPUT_DIR"
 
 cd "$WORK_DIR"
+mkdir -p "$WORK_DIR/local-debs"
+cd "$WORK_DIR"
 build-simple-cdd \
     --dist trixie \
     --profiles urrunberri \
     --auto-profiles urrunberri \
     --profiles-udeb-dist trixie \
-    --local-packages-dir "$WORK_DIR/local-debs" \
-    --mirror http://deb.debian.org/debian/ \
+    --local-packages "$WORK_DIR/local-debs" \
+    --debian-mirror http://deb.debian.org/debian/ \
     --security-mirror http://security.debian.org/debian-security/ \
-    --dvd \
-    2>&1 | tail -20
+    2>&1 | tail -30
 
 # ── FIND OUTPUT ──────────────────────────────────────────────────────────────
 echo "[4/5] Recherche de l'ISO generee..."
