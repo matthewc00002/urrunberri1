@@ -84,7 +84,6 @@ sleep 2
 bash /opt/urrunberri-os/scripts/boot.sh
 AUTOSTART
 chmod +x /root/.config/openbox/autostart
-
 # ── OPENBOX RC.XML (disable menus and shortcuts) ─────────────────────────────
 cat > /root/.config/openbox/rc.xml << 'RCXML'
 <?xml version="1.0" encoding="UTF-8"?>
@@ -98,6 +97,7 @@ cat > /root/.config/openbox/rc.xml << 'RCXML'
 </openbox_config>
 RCXML
 info "Openbox rc.xml configure"
+
 info "Openbox configure pour root"
 
 # ── LIGHTDM ROOT AUTOLOGIN ────────────────────────────────────────────────────
