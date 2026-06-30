@@ -24,6 +24,7 @@ info "=== Branche : test (GTK WebView) ==="
 info "Installation des paquets..."
 apt-get update -qq
 apt-get install -y \
+    xorg \
     openbox \
     lightdm \
     lightdm-gtk-greeter \
