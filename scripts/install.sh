@@ -22,6 +22,7 @@ info "=== UrrunBerri OS — Installation Debian 13 Trixie ==="
 info "Installation des paquets..."
 apt-get update -qq
 apt-get install -y \
+    xorg \
     openbox \
     lightdm \
     lightdm-gtk-greeter \
