@@ -304,6 +304,13 @@ const i18n = {
   eu: { recent:'Azken konexioak', or:'edo konexio berria', ip:'IP / DNS helbidea', port:'Portua', user:'Erabiltzailea', pass:'Pasahitza', proto:'Protokoloa', res:'Bereizmena', multimon:'Pantaila anitz', usb:'USB', connect:'Konektatu', connecting:'Konektatzen...', new:'Konexio berria', error:'Sartu IP / DNS eta erabiltzailea.', saved:'Konexioa gordeta.', save:'Gorde', save2:'Konexio hau gorde', del:'Ezabatu', delconfirm:'Konexio hau ezabatu?', stop:'Itzali', restart:'Berrabiarazi', shutdownconfirm:'Makina itzali?', rebootconfirm:'Makina berrabiarazi?' }
 };
 let lang = 'fr';
+function saveSettings() {
+  fetch('/settings', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({lang: lang, usb: document.getElementById('usb').checked})
+  }).catch(function(){});
+}
 function setLang(l) {
   lang = l;
   const t = i18n[l] || i18n.fr;
@@ -320,6 +327,7 @@ function setLang(l) {
   document.getElementById('lbl-res').textContent = t.res;
   document.getElementById('lbl-multimon').textContent = t.multimon;
   document.getElementById('lbl-usb').textContent = t.usb;
+  saveSettings();
   document.getElementById('btn-text').textContent = t.connect;
   document.getElementById('error-msg').textContent = t.error;
   document.getElementById('btn-save').textContent = t.save;
@@ -464,6 +472,13 @@ function reboot() {
 document.addEventListener('keydown', e => { if (e.key==='Enter') connect(); });
 renderSaved();
 onProtocolChange();
+// Load saved settings on startup
+fetch('/settings').then(function(r){return r.json()}).then(function(s){
+  if(s.lang) setLang(s.lang);
+  if(s.usb) document.getElementById('usb').checked = true;
+}).catch(function(){});
+// Save USB setting on change
+document.getElementById('usb').addEventListener('change', saveSettings);
 </script>
 </body>
 </html>
