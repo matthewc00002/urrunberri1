@@ -85,61 +85,6 @@ sleep 2
 bash /opt/urrunberri-os/scripts/boot.sh
 AUTOSTART
 chmod +x /root/.config/openbox/autostart
-# ── OPENBOX RC.XML (disable menus and shortcuts) ─────────────────────────────
-cat > /root/.config/openbox/rc.xml << 'RCXML'
-<?xml version="1.0" encoding="UTF-8"?>
-<openbox_config xmlns="http://openbox.org/3.4/rc">
-  <resistance><strength>10</strength><screen_edge_strength>20</screen_edge_strength></resistance>
-  <focus><followMouse>no</followMouse><raiseOnFocus>yes</raiseOnFocus></focus>
-  <theme>
-    <name>Clearlooks</name>
-    <titleLayout>NLIMC</titleLayout>
-    <keepBorder>yes</keepBorder>
-  </theme>
-  <desktops><number>1</number></desktops>
-  <keyboard></keyboard>
-  <mouse>
-    <context name="Titlebar">
-      <mousebind button="Left" action="Press">
-        <action name="Focus"/><action name="Raise"/>
-      </mousebind>
-    </context>
-    <context name="Close">
-      <mousebind button="Left" action="Click">
-        <action name="Close"/>
-      </mousebind>
-    </context>
-    <context name="Maximize">
-      <mousebind button="Left" action="Click">
-        <action name="ToggleMaximizeFull"/>
-      </mousebind>
-    </context>
-    <context name="Iconify">
-      <mousebind button="Left" action="Click">
-        <action name="Iconify"/>
-      </mousebind>
-    </context>
-    <context name="Frame">
-      <mousebind button="Left" action="Press">
-        <action name="Focus"/><action name="Raise"/>
-      </mousebind>
-    </context>
-    <context name="Client">
-      <mousebind button="Left" action="Press">
-        <action name="Focus"/><action name="Raise"/>
-      </mousebind>
-    </context>
-    <context name="Root">
-    </context>
-  </mouse>
-  <menu><file>menu.xml</file></menu>
-  <applications>
-    <application class="*">
-      <decor>yes</decor>
-    </application>
-  </applications>
-</openbox_config>
-RCXML
 
 # Empty menu file — no right-click menu
 cat > /root/.config/openbox/menu.xml << 'MENUXML'
@@ -149,7 +94,6 @@ cat > /root/.config/openbox/menu.xml << 'MENUXML'
   </menu>
 </openbox_menu>
 MENUXML
-info "Openbox rc.xml configure"
 
 info "Openbox configure pour root"
 
