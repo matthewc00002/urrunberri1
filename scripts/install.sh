@@ -151,6 +151,16 @@ cat > /root/.config/openbox/rc.xml << 'RCXML'
 </openbox_config>
 RCXML
 info "Openbox rc.xml configure"
+# ── EMPTY MENU (no right-click desktop menu) ─────────────────────────────────
+cat > /root/.config/openbox/menu.xml << 'MENUXML'
+<?xml version="1.0" encoding="UTF-8"?>
+<openbox_menu xmlns="http://openbox.org/3.4/menu">
+  <menu id="root-menu" label="Menu">
+  </menu>
+</openbox_menu>
+MENUXML
+info "Menu desktop vide configure"
+
 
 info "Openbox configure pour root"
 
