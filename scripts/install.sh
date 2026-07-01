@@ -23,6 +23,7 @@ info "Installation des paquets..."
 apt-get update -qq
 apt-get install -y \
     xorg \
+    numlockx \
     openbox \
     lightdm \
     lightdm-gtk-greeter \
