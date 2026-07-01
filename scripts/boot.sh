@@ -35,6 +35,7 @@ sleep 1
 xhost + 2>/dev/null || true
 xsetroot -solid "#eef2f7" 2>/dev/null || true
 xset -led named "Scroll Lock" 2>/dev/null || true
+numlockx on 2>/dev/null || true
 mkdir -p /etc/urrunberri-os
 touch "$SAVED_FILE" 2>/dev/null || true
 
@@ -211,6 +212,7 @@ show_disconnect_btn() {
 while true; do
     xsetroot -solid "#eef2f7" 2>/dev/null || true
     xset -led named "Scroll Lock" 2>/dev/null || true
+numlockx on 2>/dev/null || true
 
     if ! show_login; then
         sleep 1
