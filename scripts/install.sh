@@ -9,7 +9,7 @@
 
 set -e
 
-GITHUB_RAW="https://raw.githubusercontent.com/matthewc00002/urrunberri1/iso"
+GITHUB_RAW="https://raw.githubusercontent.com/matthewc00002/urrunberri1/test"
 INSTALL_DIR="/opt/urrunberri-os"
 
 info()  { echo "[UrrunBerri OS] $1"; }
@@ -69,7 +69,7 @@ INSTALL_DATE=$(date '+%Y-%m-%d %H:%M:%S')
 cat > /etc/urrunberri-os/version << VERSIONEOF
 version=$APP_VERSION
 date_installation=$INSTALL_DATE
-branche=iso
+branche=test
 VERSIONEOF
 info "Version installee : $APP_VERSION ($INSTALL_DATE) [branche test]"
 
@@ -85,12 +85,12 @@ sleep 2
 bash /opt/urrunberri-os/scripts/boot.sh
 AUTOSTART
 chmod +x /root/.config/openbox/autostart
+# ── OPENBOX RC.XML (disable menus and shortcuts) ─────────────────────────────
 
 # Remove any custom rc.xml — use openbox defaults for working window buttons
 rm -f /root/.config/openbox/rc.xml
-info "rc.xml supprime (defauts openbox)"
 
-# Empty menu file — no right-click menu
+# Empty menu file — no right-click menu on desktop
 cat > /root/.config/openbox/menu.xml << 'MENUXML'
 <?xml version="1.0" encoding="UTF-8"?>
 <openbox_menu xmlns="http://openbox.org/3.4/menu">
@@ -98,6 +98,7 @@ cat > /root/.config/openbox/menu.xml << 'MENUXML'
   </menu>
 </openbox_menu>
 MENUXML
+info "Menu desktop vide configure"
 
 info "Openbox configure pour root"
 
