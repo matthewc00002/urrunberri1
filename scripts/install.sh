@@ -9,7 +9,7 @@
 
 set -e
 
-GITHUB_RAW="https://raw.githubusercontent.com/matthewc00002/urrunberri1/test"
+GITHUB_RAW="https://raw.githubusercontent.com/matthewc00002/urrunberri1/iso"
 INSTALL_DIR="/opt/urrunberri-os"
 
 info()  { echo "[UrrunBerri OS] $1"; }
@@ -69,7 +69,7 @@ INSTALL_DATE=$(date '+%Y-%m-%d %H:%M:%S')
 cat > /etc/urrunberri-os/version << VERSIONEOF
 version=$APP_VERSION
 date_installation=$INSTALL_DATE
-branche=test
+branche=iso
 VERSIONEOF
 info "Version installee : $APP_VERSION ($INSTALL_DATE) [branche test]"
 
@@ -99,11 +99,9 @@ cat > /root/.config/openbox/rc.xml << 'RCXML'
   <desktops><number>1</number></desktops>
   <keyboard></keyboard>
   <mouse>
-    <!-- Titlebar buttons — working close, maximize, minimize -->
     <context name="Titlebar">
       <mousebind button="Left" action="Press">
-        <action name="Focus"/>
-        <action name="Raise"/>
+        <action name="Focus"/><action name="Raise"/>
       </mousebind>
     </context>
     <context name="Close">
@@ -121,24 +119,16 @@ cat > /root/.config/openbox/rc.xml << 'RCXML'
         <action name="Iconify"/>
       </mousebind>
     </context>
-    <context name="AllDesktops">
-      <mousebind button="Left" action="Click">
-        <action name="ToggleOmnipresent"/>
-      </mousebind>
-    </context>
     <context name="Frame">
       <mousebind button="Left" action="Press">
-        <action name="Focus"/>
-        <action name="Raise"/>
+        <action name="Focus"/><action name="Raise"/>
       </mousebind>
     </context>
     <context name="Client">
       <mousebind button="Left" action="Press">
-        <action name="Focus"/>
-        <action name="Raise"/>
+        <action name="Focus"/><action name="Raise"/>
       </mousebind>
     </context>
-    <!-- Desktop right-click — disabled -->
     <context name="Root">
     </context>
   </mouse>
@@ -150,8 +140,8 @@ cat > /root/.config/openbox/rc.xml << 'RCXML'
   </applications>
 </openbox_config>
 RCXML
-info "Openbox rc.xml configure"
-# ── EMPTY MENU (no right-click desktop menu) ─────────────────────────────────
+
+# Empty menu file — no right-click menu
 cat > /root/.config/openbox/menu.xml << 'MENUXML'
 <?xml version="1.0" encoding="UTF-8"?>
 <openbox_menu xmlns="http://openbox.org/3.4/menu">
@@ -159,8 +149,7 @@ cat > /root/.config/openbox/menu.xml << 'MENUXML'
   </menu>
 </openbox_menu>
 MENUXML
-info "Menu desktop vide configure"
-
+info "Openbox rc.xml configure"
 
 info "Openbox configure pour root"
 
