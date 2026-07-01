@@ -114,6 +114,46 @@ cat > /root/.config/openbox/rc.xml << 'RCXML'
   <desktops><number>1</number></desktops>
   <keyboard></keyboard>
   <mouse>
+    <!-- Titlebar buttons — working close, maximize, minimize -->
+    <context name="Titlebar">
+      <mousebind button="Left" action="Press">
+        <action name="Focus"/>
+        <action name="Raise"/>
+      </mousebind>
+    </context>
+    <context name="Close">
+      <mousebind button="Left" action="Click">
+        <action name="Close"/>
+      </mousebind>
+    </context>
+    <context name="Maximize">
+      <mousebind button="Left" action="Click">
+        <action name="ToggleMaximizeFull"/>
+      </mousebind>
+    </context>
+    <context name="Iconify">
+      <mousebind button="Left" action="Click">
+        <action name="Iconify"/>
+      </mousebind>
+    </context>
+    <context name="AllDesktops">
+      <mousebind button="Left" action="Click">
+        <action name="ToggleOmnipresent"/>
+      </mousebind>
+    </context>
+    <context name="Frame">
+      <mousebind button="Left" action="Press">
+        <action name="Focus"/>
+        <action name="Raise"/>
+      </mousebind>
+    </context>
+    <context name="Client">
+      <mousebind button="Left" action="Press">
+        <action name="Focus"/>
+        <action name="Raise"/>
+      </mousebind>
+    </context>
+    <!-- Desktop right-click — disabled -->
     <context name="Root">
     </context>
   </mouse>
@@ -121,20 +161,10 @@ cat > /root/.config/openbox/rc.xml << 'RCXML'
   <applications>
     <application class="*">
       <decor>yes</decor>
-      <maximized>yes</maximized>
     </application>
   </applications>
 </openbox_config>
 RCXML
-
-# Empty menu file — no right-click menu
-cat > /root/.config/openbox/menu.xml << 'MENUXML'
-<?xml version="1.0" encoding="UTF-8"?>
-<openbox_menu xmlns="http://openbox.org/3.4/menu">
-  <menu id="root-menu" label="Menu">
-  </menu>
-</openbox_menu>
-MENUXML
 info "Openbox rc.xml configure"
 
 info "Openbox configure pour root"
