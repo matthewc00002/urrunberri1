@@ -4,11 +4,12 @@
 #  Debian 13 Trixie — Root autologin — xfreerdp3
 #  Author : Mathieu Cadi — Openema SARL
 #  GitHub : https://github.com/matthewc00002/urrunberri1
+#  Branch : test (GTK WebView — sans Firefox)
 # =============================================================================
 
 set -e
 
-GITHUB_RAW="https://raw.githubusercontent.com/matthewc00002/urrunberri1/main"
+GITHUB_RAW="https://raw.githubusercontent.com/matthewc00002/urrunberri1/iso"
 INSTALL_DIR="/opt/urrunberri-os"
 
 info()  { echo "[UrrunBerri OS] $1"; }
@@ -17,6 +18,7 @@ error() { echo "[ERREUR] $1"; exit 1; }
 [[ $EUID -ne 0 ]] && error "Lancez ce script en root : bash install.sh"
 
 info "=== UrrunBerri OS — Installation Debian 13 Trixie ==="
+info "=== Branche : test (GTK WebView) ==="
 
 # ── PACKAGES ──────────────────────────────────────────────────────────────────
 info "Installation des paquets..."
@@ -27,10 +29,13 @@ apt-get install -y \
     openbox \
     lightdm \
     lightdm-gtk-greeter \
-    firefox-esr \
     xterm \
     zenity \
     python3 \
+    python3-gi \
+    python3-gi-cairo \
+    gir1.2-gtk-3.0 \
+    gir1.2-webkit2-4.1 \
     freerdp3-x11 \
     tigervnc-viewer \
     openssh-server \
@@ -45,7 +50,6 @@ info "Paquets installes"
 # ── SUPPRESSION UNCLUTTER (masquait le curseur souris) ────────────────────────
 apt-get remove -y unclutter 2>/dev/null || true
 pkill unclutter 2>/dev/null || true
-info "Unclutter supprime (curseur souris toujours visible)"
 
 # ── XFREERDP3 SYMLINK ─────────────────────────────────────────────────────────
 ln -sf /usr/bin/xfreerdp3 /usr/local/bin/xfreerdp 2>/dev/null || true
@@ -65,28 +69,9 @@ INSTALL_DATE=$(date '+%Y-%m-%d %H:%M:%S')
 cat > /etc/urrunberri-os/version << VERSIONEOF
 version=$APP_VERSION
 date_installation=$INSTALL_DATE
+branche=iso
 VERSIONEOF
-info "Version installee : $APP_VERSION ($INSTALL_DATE)"
-
-# ── FIREFOX POLICY (desactive gestionnaire de mots de passe) ──────────────────
-mkdir -p /etc/firefox-esr/policies
-cat > /etc/firefox-esr/policies/policies.json << 'POLICY'
-{
-  "policies": {
-    "PasswordManagerEnabled": false,
-    "OfferToSaveLogins": false,
-    "DisableFirefoxAccounts": true,
-    "Preferences": {
-      "signon.rememberSignons": { "Value": false, "Status": "locked" },
-      "signon.generation.enabled": { "Value": false, "Status": "locked" },
-      "signon.autofillForms": { "Value": false, "Status": "locked" }
-    }
-  }
-}
-POLICY
-mkdir -p /usr/lib/firefox-esr/distribution
-cp /etc/firefox-esr/policies/policies.json /usr/lib/firefox-esr/distribution/policies.json 2>/dev/null || true
-info "Politique Firefox configuree (mots de passe desactives)"
+info "Version installee : $APP_VERSION ($INSTALL_DATE) [branche test]"
 
 # ── OPENBOX FOR ROOT ──────────────────────────────────────────────────────────
 mkdir -p /root/.config/openbox
@@ -114,11 +99,9 @@ cat > /root/.config/openbox/rc.xml << 'RCXML'
   <desktops><number>1</number></desktops>
   <keyboard></keyboard>
   <mouse>
-    <!-- Titlebar buttons — working close, maximize, minimize -->
     <context name="Titlebar">
       <mousebind button="Left" action="Press">
-        <action name="Focus"/>
-        <action name="Raise"/>
+        <action name="Focus"/><action name="Raise"/>
       </mousebind>
     </context>
     <context name="Close">
@@ -136,24 +119,16 @@ cat > /root/.config/openbox/rc.xml << 'RCXML'
         <action name="Iconify"/>
       </mousebind>
     </context>
-    <context name="AllDesktops">
-      <mousebind button="Left" action="Click">
-        <action name="ToggleOmnipresent"/>
-      </mousebind>
-    </context>
     <context name="Frame">
       <mousebind button="Left" action="Press">
-        <action name="Focus"/>
-        <action name="Raise"/>
+        <action name="Focus"/><action name="Raise"/>
       </mousebind>
     </context>
     <context name="Client">
       <mousebind button="Left" action="Press">
-        <action name="Focus"/>
-        <action name="Raise"/>
+        <action name="Focus"/><action name="Raise"/>
       </mousebind>
     </context>
-    <!-- Desktop right-click — disabled -->
     <context name="Root">
     </context>
   </mouse>
@@ -165,8 +140,8 @@ cat > /root/.config/openbox/rc.xml << 'RCXML'
   </applications>
 </openbox_config>
 RCXML
-info "Openbox rc.xml configure"
-# ── EMPTY MENU (no right-click desktop menu) ─────────────────────────────────
+
+# Empty menu file — no right-click menu
 cat > /root/.config/openbox/menu.xml << 'MENUXML'
 <?xml version="1.0" encoding="UTF-8"?>
 <openbox_menu xmlns="http://openbox.org/3.4/menu">
@@ -174,8 +149,7 @@ cat > /root/.config/openbox/menu.xml << 'MENUXML'
   </menu>
 </openbox_menu>
 MENUXML
-info "Menu desktop vide configure"
-
+info "Openbox rc.xml configure"
 
 info "Openbox configure pour root"
 
@@ -207,15 +181,17 @@ sed -i 's/#PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
 grep -q "PermitRootLogin yes" /etc/ssh/sshd_config || echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
 
 # ── DOWNLOAD APP FILES ────────────────────────────────────────────────────────
-info "Telechargement des fichiers depuis GitHub..."
+info "Telechargement des fichiers depuis GitHub (branche test)..."
 curl -fsSL "$GITHUB_RAW/scripts/boot.sh" -o "$INSTALL_DIR/scripts/boot.sh"
 curl -fsSL "$GITHUB_RAW/scripts/urrunberri_server.py" -o "$INSTALL_DIR/scripts/urrunberri_server.py"
+curl -fsSL "$GITHUB_RAW/scripts/urrunberri_launcher.py" -o "$INSTALL_DIR/scripts/urrunberri_launcher.py"
 curl -fsSL "$GITHUB_RAW/client-ui/splash/login.html" -o "$INSTALL_DIR/splash/login.html"
 curl -fsSL "$GITHUB_RAW/client-ui/splash/logo.png" -o "$INSTALL_DIR/splash/logo.png" 2>/dev/null || true
 curl -fsSL "$GITHUB_RAW/client-ui/splash/urrunberri.png" -o "$INSTALL_DIR/splash/urrunberri.png" 2>/dev/null || true
 
 chmod +x "$INSTALL_DIR/scripts/boot.sh"
 chmod +x "$INSTALL_DIR/scripts/urrunberri_server.py"
+chmod +x "$INSTALL_DIR/scripts/urrunberri_launcher.py"
 info "Fichiers telecharges"
 
 # ── PLYMOUTH THEME ────────────────────────────────────────────────────────────
@@ -242,7 +218,7 @@ systemctl enable getty@tty2.service
 systemctl start getty@tty2.service
 systemctl daemon-reload
 
-info "=== Installation terminee ==="
+info "=== Installation terminee (branche test — GTK WebView) ==="
 info "Version : $APP_VERSION"
 info "Redemarrez avec : reboot"
 info "SSH root : ssh root@IP (PermitRootLogin active)"
