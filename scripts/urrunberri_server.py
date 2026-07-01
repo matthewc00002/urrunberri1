@@ -17,6 +17,7 @@ import os
 import re
 
 SAVED_FILE = "/etc/urrunberri-os/saved_connections.csv"
+SETTINGS_FILE = "/etc/urrunberri-os/settings.json"
 SPLASH_DIR = "/opt/urrunberri-os/splash"
 VERSION_FILE = "/etc/urrunberri-os/version"
 ACTION_FILE = "/tmp/urrunberri_action.txt"
@@ -194,6 +195,26 @@ def delete_connection(index):
             f.write(f"{c['host']}|{c['port']}|{c['user']}|{c['domain']}|{c['name']}|{c['protocol']}|{c['resolution']}|{c['multimon']}\n")
     return conns
 
+
+def load_settings():
+    try:
+        if os.path.exists(SETTINGS_FILE):
+            with open(SETTINGS_FILE, 'r') as f:
+                return json.load(f)
+    except:
+        pass
+    return {"lang": "fr", "usb": False}
+
+def save_settings(settings):
+    allowed = {"lang", "usb"}
+    clean = {}
+    for k in allowed:
+        if k in settings:
+            clean[k] = settings[k]
+    with open(SETTINGS_FILE, 'w') as f:
+        json.dump(clean, f)
+    return clean
+
 def test_connection(host, port):
     # Sanitize before passing to subprocess
     host = sanitize_host(host)
@@ -275,6 +296,11 @@ class UrrunBerriHandler(http.server.BaseHTTPRequestHandler):
             self.send_json({'ok': True, 'connections': conns})
             return
 
+        if path == '/settings':
+            save_settings(data)
+            self.send_json({'ok': True, 'settings': load_settings()})
+            return
+
         self.send_cors('ok')
 
     def do_GET(self):
@@ -353,6 +379,10 @@ class UrrunBerriHandler(http.server.BaseHTTPRequestHandler):
         if path == '/terminal':
             self.send_cors('OK')
             write_action('terminal')
+            return
+
+        if path == '/settings':
+            self.send_json(load_settings())
             return
 
         if path == '/connect':
