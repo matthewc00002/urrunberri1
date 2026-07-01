@@ -86,6 +86,10 @@ bash /opt/urrunberri-os/scripts/boot.sh
 AUTOSTART
 chmod +x /root/.config/openbox/autostart
 
+# Remove any custom rc.xml — use openbox defaults for working window buttons
+rm -f /root/.config/openbox/rc.xml
+info "rc.xml supprime (defauts openbox)"
+
 # Empty menu file — no right-click menu
 cat > /root/.config/openbox/menu.xml << 'MENUXML'
 <?xml version="1.0" encoding="UTF-8"?>
