@@ -105,13 +105,36 @@ cat > /root/.config/openbox/rc.xml << 'RCXML'
 <?xml version="1.0" encoding="UTF-8"?>
 <openbox_config xmlns="http://openbox.org/3.4/rc">
   <resistance><strength>10</strength><screen_edge_strength>20</screen_edge_strength></resistance>
-  <focus><followMouse>no</followMouse></focus>
+  <focus><followMouse>no</followMouse><raiseOnFocus>yes</raiseOnFocus></focus>
+  <theme>
+    <name>Clearlooks</name>
+    <titleLayout>NLIMC</titleLayout>
+    <keepBorder>yes</keepBorder>
+  </theme>
   <desktops><number>1</number></desktops>
   <keyboard></keyboard>
-  <mouse></mouse>
+  <mouse>
+    <context name="Root">
+    </context>
+  </mouse>
   <menu><file>menu.xml</file></menu>
+  <applications>
+    <application class="*">
+      <decor>yes</decor>
+      <maximized>yes</maximized>
+    </application>
+  </applications>
 </openbox_config>
 RCXML
+
+# Empty menu file — no right-click menu
+cat > /root/.config/openbox/menu.xml << 'MENUXML'
+<?xml version="1.0" encoding="UTF-8"?>
+<openbox_menu xmlns="http://openbox.org/3.4/menu">
+  <menu id="root-menu" label="Menu">
+  </menu>
+</openbox_menu>
+MENUXML
 info "Openbox rc.xml configure"
 
 info "Openbox configure pour root"
