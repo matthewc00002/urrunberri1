@@ -251,7 +251,6 @@ numlockx on 2>/dev/null || true
                 /clipboard /fonts "/kbd:layout:${KBD_LAYOUT}" \
                 ${MULTIMON_ARG} \
                 ${USB_ARG} \
-                /f \
                 /log-level:ERROR &
             RDP_PID=$!
             ;;
