@@ -160,7 +160,8 @@ show_login() {
             return 1
         fi
 
-        [[ -z "$CONN_HOST" || -z "$USERNAME" ]] && return 1
+        [[ -z "$CONN_HOST" ]] && return 1
+        [[ -z "$USERNAME" && "$PROTOCOL" != "web" ]] && return 1
         [[ -z "$CONN_PORT" ]] && CONN_PORT=3389
 
         if ! validate_port "$CONN_PORT"; then
@@ -171,7 +172,7 @@ show_login() {
         [[ -z "$PROTOCOL" ]] && PROTOCOL=rdp
         # SECURITY: Only allow known protocols
         case "$PROTOCOL" in
-            rdp|vnc|ssh) ;;
+            rdp|vnc|ssh|web) ;;
             *) echo "[UrrunBerri OS] SECURITE: protocole invalide: $PROTOCOL"; return 1 ;;
         esac
 
@@ -183,7 +184,7 @@ show_login() {
             echo "[UrrunBerri OS] Resolution auto: $RESOLUTION"
         fi
 
-        if [[ -z "$PASSWORD" ]]; then
+        if [[ -z "$PASSWORD" && "$PROTOCOL" != "web" ]]; then
             PASSWORD=$(zenity --password \
                 --title="UrrunBerri OS" \
                 --text="Mot de passe pour ${USERNAME}@${CONN_HOST}" \
@@ -255,7 +256,32 @@ numlockx on 2>/dev/null || true
             RDP_PID=$!
             ;;
         vnc)
-            vncviewer "${CONN_HOST}:${CONN_PORT}" -FullColor -FullScreen 2>/dev/null &
+            VNC_PASSWD_FILE=""
+            if [[ -n "$PASSWORD" ]] && command -v vncpasswd &>/dev/null; then
+                VNC_PASSWD_FILE=$(mktemp /tmp/urrunberri_vnc.XXXXXX)
+                chmod 600 "$VNC_PASSWD_FILE"
+                # TightVNC/VNC auth uses max 8 characters — vncpasswd truncates silently
+                printf '%s\n' "$PASSWORD" | vncpasswd -f > "$VNC_PASSWD_FILE" 2>/dev/null
+            fi
+            if [[ -n "$VNC_PASSWD_FILE" && -s "$VNC_PASSWD_FILE" ]]; then
+                vncviewer "${CONN_HOST}:${CONN_PORT}" \
+                    -FullColor -FullScreen \
+                    -passwd "$VNC_PASSWD_FILE" \
+                    2>>/tmp/urrunberri_vnc.log &
+            else
+                # Fallback: viewer will prompt for the password itself
+                [[ -n "$VNC_PASSWD_FILE" ]] && rm -f "$VNC_PASSWD_FILE" && VNC_PASSWD_FILE=""
+                vncviewer "${CONN_HOST}:${CONN_PORT}" \
+                    -FullColor -FullScreen \
+                    2>>/tmp/urrunberri_vnc.log &
+            fi
+            RDP_PID=$!
+            ;;
+        web)
+            URL="http://${CONN_HOST}:${CONN_PORT}"
+            [[ "$CONN_PORT" == "443" ]] && URL="https://${CONN_HOST}"
+            python3 /opt/urrunberri-os/scripts/urrunberri_web.py "$URL" \
+                2>>/tmp/urrunberri_web.log &
             RDP_PID=$!
             ;;
         ssh)
@@ -268,9 +294,14 @@ numlockx on 2>/dev/null || true
     esac
 
     sleep 3
-    show_disconnect_btn
+    if [[ "$PROTOCOL" == "rdp" ]]; then
+        show_disconnect_btn
+    else
+        DISCONNECT_PID=""
+    fi
     wait $RDP_PID 2>/dev/null
     kill $DISCONNECT_PID 2>/dev/null || true
+    [[ -n "${VNC_PASSWD_FILE:-}" ]] && rm -f "$VNC_PASSWD_FILE" && VNC_PASSWD_FILE=""
     RDP_PID=""
     echo "[UrrunBerri OS] Deconnecte."
     umount /tmp/usb-share 2>/dev/null || true
