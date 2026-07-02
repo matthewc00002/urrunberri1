@@ -38,6 +38,7 @@ apt-get install -y \
     gir1.2-webkit2-4.1 \
     freerdp3-x11 \
     tigervnc-viewer \
+    tigervnc-tools \
     openssh-server \
     netcat-openbsd \
     x11-xserver-utils \
@@ -46,6 +47,14 @@ apt-get install -y \
     plymouth-themes \
     curl
 info "Paquets installes"
+
+# ── CONFIG TIGERVNC (desactive infobulle et dialogue erreur) ──────────────────
+mkdir -p /root/.config/tigervnc
+cat > /root/.config/tigervnc/default << 'VNCEOF'
+ShortcutModifiers=
+AlertOnFatalError=0
+VNCEOF
+info "Configuration TigerVNC appliquee"
 
 # ── SUPPRESSION UNCLUTTER (masquait le curseur souris) ────────────────────────
 apt-get remove -y unclutter 2>/dev/null || true
@@ -134,6 +143,7 @@ info "Telechargement des fichiers depuis GitHub (branche test)..."
 curl -fsSL "$GITHUB_RAW/scripts/boot.sh" -o "$INSTALL_DIR/scripts/boot.sh"
 curl -fsSL "$GITHUB_RAW/scripts/urrunberri_server.py" -o "$INSTALL_DIR/scripts/urrunberri_server.py"
 curl -fsSL "$GITHUB_RAW/scripts/urrunberri_launcher.py" -o "$INSTALL_DIR/scripts/urrunberri_launcher.py"
+curl -fsSL "$GITHUB_RAW/scripts/urrunberri_web.py" -o "$INSTALL_DIR/scripts/urrunberri_web.py"
 curl -fsSL "$GITHUB_RAW/client-ui/splash/login.html" -o "$INSTALL_DIR/splash/login.html"
 curl -fsSL "$GITHUB_RAW/client-ui/splash/logo.png" -o "$INSTALL_DIR/splash/logo.png" 2>/dev/null || true
 curl -fsSL "$GITHUB_RAW/client-ui/splash/urrunberri.png" -o "$INSTALL_DIR/splash/urrunberri.png" 2>/dev/null || true
@@ -141,6 +151,7 @@ curl -fsSL "$GITHUB_RAW/client-ui/splash/urrunberri.png" -o "$INSTALL_DIR/splash
 chmod +x "$INSTALL_DIR/scripts/boot.sh"
 chmod +x "$INSTALL_DIR/scripts/urrunberri_server.py"
 chmod +x "$INSTALL_DIR/scripts/urrunberri_launcher.py"
+chmod +x "$INSTALL_DIR/scripts/urrunberri_web.py"
 info "Fichiers telecharges"
 
 # ── PLYMOUTH THEME ────────────────────────────────────────────────────────────
